@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model About {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  // Roles will be an array of strings, e.g., ["Full Stack Developer", "Designer"]
+  roles       String[]
+  description String
+  // We will store the image and CV as base64 strings
+  image       String?
+  cv          String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
