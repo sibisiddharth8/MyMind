@@ -3,7 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import aboutRoutes from './routes/about.routes';
-import linksRoutes from './routes/links.routes'; // <-- IMPORT a new router
+import linksRoutes from './routes/links.routes';
+import skillsRoutes from './routes/skills.routes';
 
 // Load environment variables
 dotenv.config();
@@ -19,7 +20,8 @@ app.use('/images', express.static('images'));
 
 // API Routes
 app.use('/api', aboutRoutes);
-app.use('/api', linksRoutes); // <-- USE the new router
+app.use('/api', linksRoutes);
+app.use('/api', skillsRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {
