@@ -19,3 +19,13 @@ model About {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model Link {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  linkedin  String?
+  github    String?
+  instagram String?
+  portal    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
