@@ -5,6 +5,7 @@ import path from 'path';
 import aboutRoutes from './routes/about.routes';
 import linksRoutes from './routes/links.routes';
 import skillsRoutes from './routes/skills.routes';
+import experienceRoutes from './routes/experience.routes';
 
 // Load environment variables
 dotenv.config();
@@ -22,6 +23,7 @@ app.use('/images', express.static('images'));
 app.use('/api', aboutRoutes);
 app.use('/api', linksRoutes);
 app.use('/api', skillsRoutes);
+app.use('/api', experienceRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {

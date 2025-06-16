@@ -45,3 +45,17 @@ model Skill {
   categoryId String        @db.ObjectId
   category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
+
+model Experience {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  logo        String
+  role        String
+  companyName String
+  companyLink String?
+  startDate   DateTime
+  endDate     DateTime? // A null value here will signify "Present"
+  description String
+  skills      String[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}

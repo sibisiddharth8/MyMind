@@ -40,3 +40,17 @@ export const uploadSkillImage = multer({
   },
   limits: { fileSize: 1024 * 1024 * 2 } // 2MB limit for skill icons
 }).single('image'); // We only expect a single 'image' file for a skill
+
+// --- NEW MULTER FOR 'EXPERIENCE' SECTION ---
+const experienceStorage = createStorage('images/experience');
+export const uploadExperienceLogo = multer({
+  storage: experienceStorage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed for the logo!'));
+    }
+  },
+  limits: { fileSize: 1024 * 1024 * 2 } // 2MB limit for logos
+}).single('logo'); // We expect a single 'logo' file
