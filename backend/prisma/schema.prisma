@@ -67,3 +67,51 @@ model User {
   resetToken      String? // To store the password reset token
   resetTokenExpiry DateTime? // To store the reset token's expiry time
 }
+
+model ProjectCategory {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String    @unique
+  projects Project[]
+}
+
+model Project {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  projectImage String
+  startDate    DateTime
+  endDate      DateTime? // Null signifies "Present"
+  
+  githubLink String?
+  liveLink   String?
+  tags       String[]  @default([])
+
+  // --- Relationships ---
+  categoryId String          @db.ObjectId
+  category   ProjectCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  members ProjectMember[] // A project can have many members
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Member {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  profileImage  String?         // <-- ADD THIS FIELD to store the image URL
+  linkedinLink  String?
+  githubLink    String?
+  projects      ProjectMember[]
+}
+
+model ProjectMember {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  role      String  // e.g., "Frontend Developer", "UI/UX Designer"
+
+  // --- Relationships ---
+  projectId String  @db.ObjectId
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  memberId String @db.ObjectId
+  member   Member @relation(fields: [memberId], references: [id], onDelete: Restrict)
+}

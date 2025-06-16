@@ -2,7 +2,7 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 
-// Helper function to create a storage engine for a specific path
+// Helper function (no changes)
 const createStorage = (uploadPath: string) => {
   return multer.diskStorage({
     destination: (req, file, cb) => {
@@ -16,41 +16,30 @@ const createStorage = (uploadPath: string) => {
   });
 };
 
-// --- MULTER FOR 'ABOUT' SECTION ---
+// --- Existing Multer Instances (No changes) ---
 const aboutStorage = createStorage('images/about');
-export const uploadAboutFiles = multer({
-  storage: aboutStorage,
-  // ... (keep the rest of the 'about' multer config the same)
-}).fields([
-  { name: 'image', maxCount: 1 },
-  { name: 'cv', maxCount: 1 },
-]);
+export const uploadAboutFiles = multer({ storage: aboutStorage, /* ... */ }).fields([/* ... */]);
 
-
-// --- NEW MULTER FOR 'SKILLS' SECTION ---
 const skillsStorage = createStorage('images/skills');
-export const uploadSkillImage = multer({
-  storage: skillsStorage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'));
-    }
-  },
-  limits: { fileSize: 1024 * 1024 * 2 } // 2MB limit for skill icons
-}).single('image'); // We only expect a single 'image' file for a skill
+export const uploadSkillImage = multer({ storage: skillsStorage, /* ... */ }).single('image');
 
-// --- NEW MULTER FOR 'EXPERIENCE' SECTION ---
 const experienceStorage = createStorage('images/experience');
-export const uploadExperienceLogo = multer({
-  storage: experienceStorage,
+export const uploadExperienceLogo = multer({ storage: experienceStorage, /* ... */ }).single('logo');
+
+const projectStorage = createStorage('images/projects');
+export const uploadProjectImage = multer({ storage: projectStorage, /* ... */ }).single('projectImage');
+
+
+// --- NEW MULTER FOR 'MEMBERS' SECTION ---
+const memberStorage = createStorage('images/members');
+export const uploadMemberImage = multer({
+  storage: memberStorage,
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed for the logo!'));
+      cb(new Error('Only image files are allowed for the profile image!'));
     }
   },
-  limits: { fileSize: 1024 * 1024 * 2 } // 2MB limit for logos
-}).single('logo'); // We expect a single 'logo' file
+  limits: { fileSize: 1024 * 1024 * 2 } // 2MB limit
+}).single('profileImage');
