@@ -6,6 +6,7 @@ import aboutRoutes from './routes/about.routes';
 import linksRoutes from './routes/links.routes';
 import skillsRoutes from './routes/skills.routes';
 import experienceRoutes from './routes/experience.routes';
+import authRoutes from './routes/auth.routes'; 
 
 // Load environment variables
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/images', express.static('images'));
 
 // API Routes
+app.use('/api', authRoutes);
 app.use('/api', aboutRoutes);
 app.use('/api', linksRoutes);
 app.use('/api', skillsRoutes);

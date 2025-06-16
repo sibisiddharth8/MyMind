@@ -59,3 +59,11 @@ model Experience {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
+
+model User {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  email           String  @unique
+  password        String
+  resetToken      String? // To store the password reset token
+  resetTokenExpiry DateTime? // To store the reset token's expiry time
+}

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-// CHANGE IS HERE: Use the new name 'uploadAboutFiles'
+import { protect } from '../middleware/auth.middleware';
 import { uploadAboutFiles } from '../middleware/multer';
 import { 
   getAboutController, 
@@ -14,9 +14,9 @@ router.get('/about', getAboutController);
 
 // PUT /api/about - Creates or updates the about section. 
 // CHANGE IS HERE: Use the new name 'uploadAboutFiles' for the middleware
-router.put('/about', uploadAboutFiles, upsertAboutController);
+router.put('/about', protect, uploadAboutFiles, upsertAboutController);
 
 // DELETE /api/about - Deletes the about section data
-router.delete('/about', deleteAboutController);
+router.delete('/about', protect, deleteAboutController);
 
 export default router;

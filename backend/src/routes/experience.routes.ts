@@ -8,12 +8,14 @@ import {
     deleteExperienceController
 } from '../controllers/experience.controller';
 
+import { protect } from '../middleware/auth.middleware';
+
 const router = Router();
 
-router.post('/experience', uploadExperienceLogo, createExperienceController);
+router.post('/experience', protect, uploadExperienceLogo, createExperienceController);
 router.get('/experience', getAllExperiencesController);
 router.get('/experience/:id', getExperienceByIdController);
-router.put('/experience/:id', uploadExperienceLogo, updateExperienceController);
-router.delete('/experience/:id', deleteExperienceController);
+router.put('/experience/:id', protect, uploadExperienceLogo, updateExperienceController);
+router.delete('/experience/:id', protect, deleteExperienceController);
 
 export default router;
