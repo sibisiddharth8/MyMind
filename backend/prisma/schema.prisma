@@ -148,3 +148,14 @@ model ContactMessage {
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }
+
+model TermAndCondition {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  title     String  // A title for the term, e.g., "1. User Obligations"
+  content   String  @db.String // The full text of the term
+  imagePath String? // Optional path to an image illustrating the term
+  order     Int     // For custom sorting
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
