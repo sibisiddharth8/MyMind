@@ -130,3 +130,21 @@ model Education {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
+
+enum MessageStatus {
+  UNREAD
+  READ
+  RESPONDED
+}
+
+model ContactMessage {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  name      String
+  subject   String
+  message   String
+  status    MessageStatus @default(UNREAD)
+  
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
