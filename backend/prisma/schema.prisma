@@ -115,3 +115,18 @@ model ProjectMember {
   memberId String @db.ObjectId
   member   Member @relation(fields: [memberId], references: [id], onDelete: Restrict)
 }
+
+model Education {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  institutionName String
+  courseName      String
+  logo            String    // Path to the institution's logo
+  startDate       DateTime
+  endDate         DateTime  // We'll sort by this field
+  description     String
+  grade           String    // Flexible field for "CGPA: 8.5" or "Grade: A+"
+  institutionLink String?   // Optional link
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}

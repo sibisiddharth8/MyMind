@@ -8,6 +8,7 @@ import skillsRoutes from './routes/skills.routes';
 import experienceRoutes from './routes/experience.routes';
 import memberRoutes from './routes/member.routes';       
 import projectRoutes from './routes/project.routes';
+import educationRoutes from './routes/education.routes';
 import authRoutes from './routes/auth.routes'; 
 
 // Load environment variables
@@ -30,6 +31,7 @@ app.use('/api', skillsRoutes);
 app.use('/api', experienceRoutes);
 app.use('/api', memberRoutes);      
 app.use('/api', projectRoutes);
+app.use('/api', educationRoutes);
 
 // Health check endpoint
 app.get('/', (req, res) => {

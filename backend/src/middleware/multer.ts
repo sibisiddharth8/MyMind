@@ -43,3 +43,16 @@ export const uploadMemberImage = multer({
   },
   limits: { fileSize: 1024 * 1024 * 2 } // 2MB limit
 }).single('profileImage');
+
+const educationStorage = createStorage('images/education');
+export const uploadEducationLogo = multer({
+  storage: educationStorage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed for the logo!'));
+    }
+  },
+  limits: { fileSize: 1024 * 1024 * 2 } // 2MB limit for logos
+}).single('logo');
