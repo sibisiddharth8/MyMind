@@ -7,101 +7,88 @@ import path from 'path';
 // Helper function to delete a file if it exists
 const deleteFile = (filePath: string | null | undefined) => {
   if (!filePath) return;
-  // Construct the full path from the project root
   const fullPath = path.resolve(filePath);
   if (fs.existsSync(fullPath)) {
-    fs.unlink(fullPath, (err) => {
-      if (err) {
-        console.error(`Failed to delete file: ${fullPath}`, err);
-      }
-    });
+    fs.unlinkSync(fullPath);
   }
 };
 
+// --- GET CONTROLLER ---
 export const getAboutController = async (req: Request, res: Response): Promise<void> => {
-    // This function remains the same
-    try {
-        const about = await aboutService.getAbout();
-        if (!about) {
-            res.status(404).json({ message: 'About information not found.' });
-        } else {
-            res.status(200).json(about);
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching data', error });
+  try {
+    const about = await aboutService.getAbout();
+    if (!about) {
+      res.status(404).json({ message: 'About information not found. Please create it.' });
+    } else {
+      res.status(200).json({ message: "About data retrieved successfully.", data: about });
     }
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching data', error });
+  }
 };
 
+// --- UPSERT CONTROLLER ---
 export const upsertAboutController = async (req: Request, res: Response): Promise<void> => {
   try {
     const existingData = await aboutService.getAbout();
 
-    // If creating for the first time, all core fields are required.
-    if (!existingData) {
-      const { name, roles, description } = req.body;
-      if (!name || !roles || !description) {
-        res.status(400).json({ message: 'When creating, name, roles, and description are all required.' });
-        return;
-      }
+    if (!existingData && (!req.body.name || !req.body.roles || !req.body.description)) {
+      res.status(400).json({ message: 'When creating, name, roles, and description are all required.' });
+      return;
     }
 
     const payload: Partial<AboutData> = {};
 
-    // Handle text fields, allowing them to be set to null or an empty string to delete them.
-    ['name', 'roles', 'description'].forEach(field => {
-      if (req.body[field] !== undefined) {
-        if (field === 'roles') {
-          payload.roles = typeof req.body.roles === 'string'
-            ? req.body.roles.split(',').filter((r: string) => r).map((r: string) => r.trim())
-            : req.body.roles;
-        } else {
-          payload[field as keyof Omit<AboutData, 'roles'>] = req.body[field];
-        }
-      }
-    });
+    if (req.body.name) payload.name = req.body.name;
+    if (req.body.description) payload.description = req.body.description;
+    if (req.body.roles) {
+      payload.roles = typeof req.body.roles === 'string'
+        ? req.body.roles.split(',').map((r: string) => r.trim())
+        : req.body.roles;
+    }
 
-    // Handle file fields
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    
-    if (files?.image) {
-      deleteFile(existingData?.image); // Delete old file
-      payload.image = files.image[0].path.replace(/\\/g, '/'); // Store new path
-    } else if (req.body.image === null) {
-      deleteFile(existingData?.image); // Delete file if set to null
+    const files = req.files as Express.Multer.File[] | undefined;
+    const imageFile = files?.find(f => f.fieldname === 'image');
+    const cvFile = files?.find(f => f.fieldname === 'cv');
+
+    if (req.body.removeImage === 'true') {
+      deleteFile(existingData?.image);
       payload.image = null;
+    } else if (imageFile) {
+      deleteFile(existingData?.image);
+      payload.image = imageFile.path.replace(/\\/g, '/');
     }
 
-    if (files?.cv) {
-      deleteFile(existingData?.cv); // Delete old file
-      payload.cv = files.cv[0].path.replace(/\\/g, '/'); // Store new path
-    } else if (req.body.cv === null) {
-      deleteFile(existingData?.cv); // Delete file if set to null
+    if (req.body.removeCv === 'true') {
+      deleteFile(existingData?.cv);
       payload.cv = null;
+    } else if (cvFile) {
+      deleteFile(existingData?.cv);
+      payload.cv = cvFile.path.replace(/\\/g, '/');
     }
-    
+
     const result = await aboutService.upsertAbout(payload, existingData);
     const statusCode = existingData ? 200 : 201;
-    res.status(statusCode).json(result);
-
+    res.status(statusCode).json({ message: "About section updated successfully.", data: result });
   } catch (error: any) {
     res.status(500).json({ message: 'Error processing request', error: error.message });
   }
 };
 
+// --- DELETE CONTROLLER ---
 export const deleteAboutController = async (req: Request, res: Response): Promise<void> => {
-    // When deleting the whole section, also delete its associated files
+  try {
     const existingData = await aboutService.getAbout();
-    deleteFile(existingData?.image);
-    deleteFile(existingData?.cv);
+    if (existingData) {
+      deleteFile(existingData.image ?? undefined);
+      deleteFile(existingData.cv ?? undefined);
 
-    try {
-        await aboutService.deleteAbout();
-        res.status(204).send();
-    } catch (error: any) {
-        if (error.message === 'About section not found.') {
-            res.status(404).json({ message: error.message });
-        } else {
-            res.status(500).json({ message: 'Error deleting data', error: error.message });
-        }
+      await aboutService.deleteAbout();
+      res.status(204).send();
+    } else {
+      res.status(404).json({ message: "About data not found. Nothing to delete." });
     }
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting About data.", error });
+  }
 };
