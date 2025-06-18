@@ -1,6 +1,6 @@
 import apiClient from './apiClient';
 
-// Type definitions are for internal use and not exported
+// Local Type Definitions
 interface Member {
   id: string;
   name: string;
@@ -19,6 +19,13 @@ export const getMembers = async ({ page = 1, limit = 10, name }: { page: number,
   const { data } = await apiClient.get('/members', { params: { page, limit, name } });
   return data;
 };
+
+// --- THIS IS THE NEW FUNCTION THAT WAS MISSING ---
+// Fetches all members without pagination, for use in dropdowns.
+export const getAllMembersSimple = async (): Promise<ApiResponse> => {
+    const { data } = await apiClient.get('/members?limit=1000'); // Use a large limit to get all
+    return data;
+}
 
 // Creates a new member
 export const createMember = async (formData: FormData): Promise<ApiResponse> => {

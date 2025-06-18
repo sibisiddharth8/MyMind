@@ -79,8 +79,11 @@ model Project {
   name         String
   projectImage String
   startDate    DateTime
-  endDate      DateTime? // Null signifies "Present"
+  endDate      DateTime?
   
+  // --- ADD THIS LINE ---
+  description  String    // The description of the project
+
   githubLink String?
   liveLink   String?
   tags       String[]  @default([])
@@ -89,7 +92,7 @@ model Project {
   categoryId String          @db.ObjectId
   category   ProjectCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 
-  members ProjectMember[] // A project can have many members
+  members ProjectMember[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
