@@ -12,14 +12,12 @@ const deleteFile = (filePath: string | null | undefined) => {
 
 export const createEducationController = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { institutionName, courseName, startDate, endDate, description, grade, institutionLink } = req.body;
+        const { institutionName, courseName, startDate, description, grade } = req.body;
         
-        const requiredFields = { institutionName, courseName, startDate, endDate, description, grade };
-        for (const [field, value] of Object.entries(requiredFields)) {
-            if (!value) {
-                res.status(400).json({ message: `Field '${field}' is required.` });
-                return;
-            }
+        const requiredFields = { institutionName, courseName, startDate, description, grade };
+        if (Object.values(requiredFields).some(field => !field)) {
+            res.status(400).json({ message: "All text fields are required." });
+            return;
         }
         if (!req.file) {
             res.status(400).json({ message: "Institution logo is a required file." });
@@ -30,7 +28,7 @@ export const createEducationController = async (req: Request, res: Response): Pr
             ...req.body,
             logo: req.file.path.replace(/\\/g, "/"),
             startDate: new Date(startDate),
-            endDate: new Date(endDate),
+            endDate: req.body.endDate && req.body.endDate !== 'present' ? new Date(req.body.endDate) : null,
         };
         
         const education = await educationService.createEducation(payload);
@@ -63,17 +61,37 @@ export const getEducationByIdController = async (req: Request, res: Response): P
     }
 };
 
+// --- THIS FUNCTION IS NOW FULLY IMPLEMENTED ---
 export const updateEducationController = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const payload: EducationData = { ...req.body };
+        const oldEducation = await educationService.getEducationById(id);
+        if (!oldEducation) {
+            res.status(404).json({ message: "Education entry not found." });
+            return;
+        }
+        
+        const payload: EducationData = {};
 
+        // Add text fields to payload if they were sent in the request
+        const textFields: (keyof EducationData)[] = ['institutionName', 'courseName', 'description', 'grade', 'institutionLink'];
+        textFields.forEach(field => {
+            if (req.body[field] !== undefined) {
+                payload[field] = req.body[field];
+            }
+        });
+        
         if (req.body.startDate) payload.startDate = new Date(req.body.startDate);
-        if (req.body.endDate) payload.endDate = new Date(req.body.endDate);
+        if (req.body.endDate !== undefined) {
+            payload.endDate = req.body.endDate === 'present' ? null : new Date(req.body.endDate);
+        }
 
-        if (req.file) {
-            const oldEducation = await educationService.getEducationById(id);
-            deleteFile(oldEducation?.logo);
+        // Handle logo update or removal
+        if (req.body.removeLogo === 'true') {
+            deleteFile(oldEducation.logo);
+            payload.logo = null;
+        } else if (req.file) {
+            deleteFile(oldEducation.logo);
             payload.logo = req.file.path.replace(/\\/g, "/");
         }
 
@@ -89,6 +107,7 @@ export const updateEducationController = async (req: Request, res: Response): Pr
     }
 };
 
+// --- THIS FUNCTION IS NOW FULLY IMPLEMENTED ---
 export const deleteEducationController = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;

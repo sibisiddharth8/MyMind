@@ -7,12 +7,26 @@ export const createEducation = (data: EducationData) => {
   return prisma.education.create({ data: data as Education });
 };
 
-export const getAllEducations = () => {
-  return prisma.education.findMany({
-    // Sorts by the end date, newest first
-    orderBy: {
-      endDate: 'desc'
+export const getAllEducations = async () => {
+  const educations = await prisma.education.findMany({});
+
+  // Sort in application code to handle "Present" (null endDate) correctly
+  return educations.sort((a, b) => {
+    const aIsPresent = a.endDate === null;
+    const bIsPresent = b.endDate === null;
+
+    if (aIsPresent && !bIsPresent) return -1;
+    if (!aIsPresent && bIsPresent) return 1;
+
+    if (aIsPresent && bIsPresent) {
+      return b.startDate.getTime() - a.startDate.getTime(); // Newest start date first
     }
+    
+    if (a.endDate && b.endDate) {
+      return b.endDate.getTime() - a.endDate.getTime(); // Newest end date first
+    }
+    
+    return 0;
   });
 };
 

@@ -97,7 +97,7 @@ export default function ExperiencePage() {
                                 <p className="text-sm text-slate-400 mt-1">
                                     {new Date(exp.startDate).toLocaleDateString('en-US', {month: 'short', year: 'numeric'})} - {exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', {month: 'short', year: 'numeric'}) : 'Present'}
                                 </p>
-                                <p className="text-sm text-slate-500 mt-2">{exp.description}</p>
+                                
                                 <div className="mt-3 flex flex-wrap gap-2">
                                     {exp.skills.map((skill: string) => <span key={skill} className="text-xs bg-blue-100 text-blue-800 font-medium px-2 py-1 rounded-full">{skill}</span>)}
                                 </div>
