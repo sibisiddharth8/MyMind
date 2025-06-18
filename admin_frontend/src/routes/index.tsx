@@ -7,6 +7,7 @@ import DashboardPage from '../pages/DashboardPage';
 
 import AboutPage from '../pages/AboutPage';
 import LinksPage from '../pages/LinksPage';
+import ExperiencePage from '../pages/ExperiencePage';
 
 // Placeholder for feature pages
 const PlaceholderPage = ({ title }: { title: string }) => <h1 className="text-4xl font-bold">{title}</h1>;
@@ -24,7 +25,7 @@ export const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: 'about', element: <AboutPage /> },
       { path: 'links', element:  <LinksPage /> },
-      { path: 'experience', element: <PlaceholderPage title="Experience Page" /> },
+      { path: 'experience', element:  <ExperiencePage /> },
       { path: 'education', element: <PlaceholderPage title="Education Page" /> },
       { path: 'skills', element: <PlaceholderPage title="Skills Page" /> },
       { path: 'projects', element: <PlaceholderPage title="Projects Page" /> },
