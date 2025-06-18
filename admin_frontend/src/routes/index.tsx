@@ -6,6 +6,7 @@ import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 
 import AboutPage from '../pages/AboutPage';
+import LinksPage from '../pages/LinksPage';
 
 // Placeholder for feature pages
 const PlaceholderPage = ({ title }: { title: string }) => <h1 className="text-4xl font-bold">{title}</h1>;
@@ -22,7 +23,7 @@ export const router = createBrowserRouter([
       // All protected routes are nested here and will render inside MainLayout's <Outlet>
       { index: true, element: <DashboardPage /> },
       { path: 'about', element: <AboutPage /> },
-      { path: 'links', element: <PlaceholderPage title="Links Page" /> },
+      { path: 'links', element:  <LinksPage /> },
       { path: 'experience', element: <PlaceholderPage title="Experience Page" /> },
       { path: 'education', element: <PlaceholderPage title="Education Page" /> },
       { path: 'skills', element: <PlaceholderPage title="Skills Page" /> },

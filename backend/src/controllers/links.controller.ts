@@ -6,9 +6,11 @@ export const getLinksController = async (req: Request, res: Response): Promise<v
   try {
     const links = await linksService.getLinks();
     if (!links) {
-      res.status(404).json({ message: 'Links not found.' });
+      // It's okay if no links exist yet, send a specific message and empty data
+      res.status(404).json({ message: 'No links found. Please create them.', data: null });
     } else {
-      res.status(200).json(links);
+      // Ensure the response is always wrapped for consistency
+      res.status(200).json({ message: 'Links retrieved successfully.', data: links });
     }
   } catch (error) {
     res.status(500).json({ message: 'Error fetching links', error });
@@ -19,11 +21,9 @@ export const upsertLinksController = async (req: Request, res: Response): Promis
   try {
     const existingLinks = await linksService.getLinks();
     const payload: LinkData = req.body;
-
     const result = await linksService.upsertLinks(payload, existingLinks);
     const statusCode = existingLinks ? 200 : 201;
-    res.status(statusCode).json(result);
-
+    res.status(statusCode).json({ message: 'Links updated successfully.', data: result});
   } catch (error: any) {
     res.status(500).json({ message: 'Error processing links request', error: error.message });
   }
