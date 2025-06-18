@@ -57,7 +57,7 @@ export default function SkillFormModal({ isOpen, onClose, categoryId, skillToEdi
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-50" onClose={onClose}>
                 {/* ... (Modal background and panel structure is the same as other modals) ... */}
-                <div className="fixed inset-0 bg-black bg-opacity-40" />
+                <div className="fixed inset-0 bg-black/40" />
                 <div className="fixed inset-0 overflow-y-auto">
                 <div className="flex min-h-full items-center justify-center p-4">
                     <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
