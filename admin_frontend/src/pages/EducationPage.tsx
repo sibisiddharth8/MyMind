@@ -99,7 +99,7 @@ export default function EducationPage() {
                             </div>
                         </div>
                     )) : (
-                        <div className="text-center py-16 px-6 bg-white rounded-xl shadow-md">
+                        <div className="text-center py-16 px-2">
                             <h3 className="text-xl font-semibold text-slate-700">No Education Added Yet</h3>
                             <p className="text-slate-500 mt-2">Click the button above to add your first education entry.</p>
                         </div>
