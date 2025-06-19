@@ -12,6 +12,7 @@ import EducationPage from '../pages/EducationPage';
 import SkillsPage from '../pages/SkillsPage';
 import MembersPage from '../pages/MembersPage';
 import ProjectsPage from '../pages/ProjectsPage';
+import ContactPage from '../pages/ContactPage';
 
 // Placeholder for feature pages
 const PlaceholderPage = ({ title }: { title: string }) => <h1 className="text-4xl font-bold">{title}</h1>;
@@ -34,7 +35,7 @@ export const router = createBrowserRouter([
       { path: 'skills', element:  <SkillsPage /> },
       { path: 'projects', element:   <ProjectsPage /> },
       { path: 'members', element:  <MembersPage /> },
-      { path: 'contact', element: <PlaceholderPage title="Contact Messages Page" /> },
+      { path: 'contact', element:  <ContactPage /> },
       { path: 'terms', element: <PlaceholderPage title="Terms & Conditions Page" /> },
     ],
   },

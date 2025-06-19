@@ -7,14 +7,15 @@ import nodemailer from 'nodemailer';
 const prisma = new PrismaClient();
 
 export const loginUser = async (email: string, pass: string) => {
-    const user = await prisma.user.findUnique({ where: { email } });
+    // FIX: Use prisma.admin
+    const user = await prisma.admin.findUnique({ where: { email } });
     if (!user) {
-        throw new Error("Invalid credentials.");
+        throw new Error("Invalid admin credentials.");
     }
 
     const isMatch = await bcrypt.compare(pass, user.password);
     if (!isMatch) {
-        throw new Error("Invalid credentials.");
+        throw new Error("Invalid admin credentials.");
     }
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '1d' });
@@ -22,44 +23,38 @@ export const loginUser = async (email: string, pass: string) => {
 };
 
 export const forgotPassword = async (email: string) => {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-        throw new Error("User with that email does not exist.");
-    }
+    const user = await prisma.admin.findUnique({ where: { email } });
+    if (!user) return; // Silently succeed
 
-    const resetToken = randomBytes(20).toString('hex');
-    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+    // FIX: Generate a 6-digit OTP instead of a long token
+    const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+    const resetTokenExpiry = new Date(Date.now() + 600000); // Token is valid for 10 minutes
 
-    await prisma.user.update({
+    await prisma.admin.update({
         where: { email },
         data: { resetToken, resetTokenExpiry }
     });
     
-    // --- Send Email ---
     const transport = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: Number(process.env.EMAIL_PORT),
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
+        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
     });
 
     const mailOptions = {
         to: user.email,
-        from: 'passwordreset@demo.com',
-        subject: 'Your Portfolio Password Reset',
-        text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
-               Your password reset token is: ${resetToken}\n\n
-               If you did not request this, please ignore this email and your password will remain unchanged.\n`
+        from: `Your Portfolio Admin <${process.env.EMAIL_USER}>`,
+        subject: 'Your Admin Portal Password Reset Code',
+        // FIX: Updated email body
+        html: `<p>You requested a password reset for your admin portal. Your 6-digit code is: <b style="font-size: 18px;">${resetToken}</b>. It will expire in 10 minutes.</p>`
     };
 
-    const info = await transport.sendMail(mailOptions);
-    return nodemailer.getTestMessageUrl(info);
+    await transport.sendMail(mailOptions);
 };
 
 export const resetPassword = async (token: string, newPass: string) => {
-    const user = await prisma.user.findFirst({
+    // FIX: Use prisma.admin
+    const user = await prisma.admin.findFirst({
         where: {
             resetToken: token,
             resetTokenExpiry: { gte: new Date() }
@@ -72,7 +67,8 @@ export const resetPassword = async (token: string, newPass: string) => {
 
     const hashedPassword = await bcrypt.hash(newPass, 12);
 
-    await prisma.user.update({
+    // FIX: Use prisma.admin
+    await prisma.admin.update({
         where: { id: user.id },
         data: {
             password: hashedPassword,

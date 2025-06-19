@@ -60,12 +60,28 @@ model Experience {
   updatedAt   DateTime  @updatedAt
 }
 
-model User {
-  id              String  @id @default(auto()) @map("_id") @db.ObjectId
-  email           String  @unique
-  password        String
-  resetToken      String? // To store the password reset token
-  resetTokenExpiry DateTime? // To store the reset token's expiry time
+model Admin {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  email            String    @unique
+  password         String
+  resetToken       String?
+  resetTokenExpiry DateTime?
+}
+
+model PublicUser {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  email            String    @unique
+  name             String
+  password         String
+
+  // --- ADD THESE NEW FIELDS ---
+  verificationOtp  String?   // To store the 6-digit OTP
+  otpExpiry        DateTime? // The time when the OTP will expire
+  isVerified       Boolean   @default(false) // Defaults to false until verified
+
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  messages         ContactMessage[]
 }
 
 model ProjectCategory {
@@ -148,6 +164,10 @@ model ContactMessage {
   message   String
   status    MessageStatus @default(UNREAD)
   
+  // --- This is the new relationship ---
+  publicUserId String     @db.ObjectId
+  publicUser   PublicUser @relation(fields: [publicUserId], references: [id])
+
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }

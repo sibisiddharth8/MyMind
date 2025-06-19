@@ -11,7 +11,9 @@ import projectRoutes from './routes/project.routes';
 import educationRoutes from './routes/education.routes';
 import contactRoutes from './routes/contact.routes';
 import termsRoutes from './routes/terms.routes';
-import authRoutes from './routes/auth.routes'; 
+import publicUserRoutes from './routes/publicUser.routes';
+import adminAuthRoutes from './routes/adminAuth.routes'; 
+
 
 // Load environment variables
 dotenv.config();
@@ -26,7 +28,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/images', express.static('images'));
 
 // API Routes
-app.use('/api', authRoutes);
+app.use('/api', publicUserRoutes);
+app.use('/api', adminAuthRoutes);
 app.use('/api', aboutRoutes);
 app.use('/api', linksRoutes);
 app.use('/api', skillsRoutes);

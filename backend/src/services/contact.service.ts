@@ -1,23 +1,66 @@
-import { PrismaClient, MessageStatus, Prisma } from '@prisma/client'; // <-- THE FIX IS HERE
+import { PrismaClient, MessageStatus, Prisma } from '@prisma/client';
 import nodemailer from 'nodemailer';
 
 const prisma = new PrismaClient();
 
-// Create a message (for public use)
-export const createMessage = (data: { name: string, email: string, subject: string, message: string }) => {
-  return prisma.contactMessage.create({ data });
+// This function now correctly requires a 'user' object to link the message.
+export const createMessage = (
+    data: { subject: string, message: string }, 
+    user: { userId: string, name: string, email: string }
+) => {
+  return prisma.contactMessage.create({ 
+      data: {
+          subject: data.subject,
+          message: data.message,
+          name: user.name,
+          email: user.email,
+          publicUser: {
+              connect: {
+                  id: user.userId
+              }
+          }
+      } 
+  });
 };
 
-// Get all messages with pagination (for admin)
-export const getAllMessages = async ({ page = 1, limit = 10, email, status, searchQuery }: {
+// This function now correctly handles date filters and searches by email.
+export const getAllMessages = async ({ page = 1, limit = 10, email, status, searchQuery, dateFilter }: {
     page: number,
     limit: number,
     email?: string,
     status?: MessageStatus,
-    searchQuery?: string
+    searchQuery?: string,
+    dateFilter?: string
 }) => {
-    // Build the 'where' clause dynamically based on provided filters
     const where: Prisma.ContactMessageWhereInput = {};
+
+    if (dateFilter) {
+        let gte: Date | undefined;
+        const now = new Date();
+        switch (dateFilter) {
+            case 'today':
+                gte = new Date();
+                gte.setHours(0, 0, 0, 0);
+                break;
+            case 'yesterday':
+                gte = new Date();
+                gte.setDate(gte.getDate() - 1);
+                gte.setHours(0, 0, 0, 0);
+                break;
+            case 'last7days':
+                gte = new Date();
+                gte.setDate(gte.getDate() - 7);
+                break;
+            case 'last30days':
+                gte = new Date();
+                gte.setDate(gte.getDate() - 30);
+                break;
+        }
+        if (gte) {
+            where.createdAt = { gte };
+        }
+    }
+    
     if (email) {
         where.email = { contains: email, mode: 'insensitive' };
     }
@@ -27,6 +70,7 @@ export const getAllMessages = async ({ page = 1, limit = 10, email, status, sear
     if (searchQuery) {
         where.OR = [
             { name: { contains: searchQuery, mode: 'insensitive' } },
+            { email: { contains: searchQuery, mode: 'insensitive' } }, // Now searches by email
             { subject: { contains: searchQuery, mode: 'insensitive' } },
             { message: { contains: searchQuery, mode: 'insensitive' } }
         ];
@@ -46,7 +90,7 @@ export const getAllMessages = async ({ page = 1, limit = 10, email, status, sear
     };
 };
 
-// Get a single message and mark it as READ (for admin)
+// Get a single message and automatically mark it as READ
 export const getMessageById = async (id: string) => {
   const message = await prisma.contactMessage.findUnique({ where: { id } });
   if (message && message.status === 'UNREAD') {
@@ -55,14 +99,13 @@ export const getMessageById = async (id: string) => {
   return message;
 };
 
-// Get message stats (for admin)
+// Get message statistics
 export const getMessageStats = async () => {
     const total = await prisma.contactMessage.count();
     const unread = await prisma.contactMessage.count({ where: { status: 'UNREAD' } });
     const read = await prisma.contactMessage.count({ where: { status: 'READ' } });
     const responded = await prisma.contactMessage.count({ where: { status: 'RESPONDED' } });
     
-    // Use Prisma's 'distinct' feature to count unique emails
     const distinctEmails = await prisma.contactMessage.findMany({
         distinct: ['email'],
         select: { email: true }
@@ -72,24 +115,23 @@ export const getMessageStats = async () => {
     return { total, unread, read, responded, uniqueSenderCount };
 };
 
-// Update a message's status (for admin)
+// Manually update a message's status
 export const updateMessageStatus = (id: string, status: MessageStatus) => {
     return prisma.contactMessage.update({ where: { id }, data: { status } });
 };
 
-// Delete a message (for admin)
+// Delete a message
 export const deleteMessage = (id: string) => {
   return prisma.contactMessage.delete({ where: { id } });
 };
 
-// Reply to a message (for admin)
+// Reply to a message and send an email
 export const replyToMessage = async (id: string, replyText: string) => {
     const originalMessage = await prisma.contactMessage.findUnique({ where: { id } });
     if (!originalMessage) {
         throw new Error("Original message not found.");
     }
 
-    // --- Send Email via Nodemailer ---
     const transport = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: Number(process.env.EMAIL_PORT),
@@ -98,17 +140,25 @@ export const replyToMessage = async (id: string, replyText: string) => {
 
     const mailOptions = {
         to: originalMessage.email,
-        from: 'your-portfolio@admin.com', // Your admin email
+        from: `Sibi Siddharth <${process.env.EMAIL_USER}>`,
         subject: `Re: ${originalMessage.subject}`,
-        text: `Hi ${originalMessage.name},\n\nYou sent the following message:\n"${originalMessage.message}"\n\nMy Reply:\n${replyText}\n\nBest regards,\nSibi Siddharth`,
-        html: `<p>Hi ${originalMessage.name},</p><p>You sent the following message:</p><blockquote>${originalMessage.message}</blockquote><hr><p><b>My Reply:</b></p><p>${replyText}</p><hr><p>Best regards,<br/>Sibi Siddharth</p>`,
+        html: `
+            <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6; color: #333;">
+                <p>Hi ${originalMessage.name},</p>
+                <p>Thank you for your message. Here is my response:</p>
+                <div style="border-left: 3px solid #ccc; padding-left: 15px; margin: 15px 0; color: #555;">
+                    <p>${replyText}</p>
+                </div>
+                <p>Best regards,<br/>Sibi Siddharth</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin-top: 20px;" />
+                <p style="font-size: 12px; color: #888;"><b>Original Message:</b> "${originalMessage.message}"</p>
+            </div>
+        `
     };
 
     const info = await transport.sendMail(mailOptions);
     
-    // After sending, update the status to RESPONDED
     await updateMessageStatus(id, 'RESPONDED');
-
-    // Return the Ethereal test URL for verification
+    
     return nodemailer.getTestMessageUrl(info);
 };

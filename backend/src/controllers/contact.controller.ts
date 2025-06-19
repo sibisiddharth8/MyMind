@@ -1,16 +1,18 @@
 import { Request, Response } from 'express';
 import * as contactService from '../services/contact.service';
 import { MessageStatus } from '@prisma/client';
+import { PublicAuthRequest } from '../middleware/protectPublicUser.middleware';
 
-export const createMessageController = async (req: Request, res: Response): Promise<void> => {
+export const createMessageController = async (req: PublicAuthRequest, res: Response): Promise<void> => {
     try {
-        const { name, email, subject, message } = req.body;
-        if (!name || !email || !subject || !message) {
-            res.status(400).json({ message: "All fields (name, email, subject, message) are required." });
+        const { subject, message } = req.body;
+        if (!subject || !message) {
+            res.status(400).json({ message: "Subject and message are required." });
             return;
         }
-        const newMessage = await contactService.createMessage(req.body);
-        res.status(201).json({ message: "Message sent successfully! Thank you for reaching out.", data: newMessage });
+        const user = req.user!; 
+        const newMessage = await contactService.createMessage({ subject, message }, user);
+        res.status(201).json({ message: "Message sent successfully!", data: newMessage });
     } catch (error) {
         res.status(500).json({ message: "Error sending message.", error });
     }
@@ -23,10 +25,12 @@ export const getAllMessagesController = async (req: Request, res: Response): Pro
         const email = req.query.email as string | undefined;
         const status = req.query.status as MessageStatus | undefined;
         const searchQuery = req.query.search as string | undefined;
+        const dateFilter = req.query.dateFilter as string | undefined; // <-- ADD THIS
 
-        const result = await contactService.getAllMessages({ page, limit, email, status, searchQuery });
+        const result = await contactService.getAllMessages({ page, limit, email, status, searchQuery, dateFilter }); // <-- PASS IT
         res.status(200).json({ message: "Messages retrieved successfully.", ...result });
     } catch (error) {
+        console.error("--- ERROR FETCHING CONTACT MESSAGES ---", error);
         res.status(500).json({ message: "Error retrieving messages.", error });
     }
 };
