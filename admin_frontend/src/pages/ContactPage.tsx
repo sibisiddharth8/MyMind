@@ -14,19 +14,19 @@ import MessageCard from '../components/contact/MessageCard';
 import { getMessages, deleteMessage, updateMessageStatus } from '../services/contactService';
 
 // Local Type Definitions to avoid import issues
-enum MessageStatus { 
-  UNREAD = 'UNREAD', 
-  READ = 'READ', 
-  RESPONDED = 'RESPONDED' 
+enum MessageStatus {
+    UNREAD = 'UNREAD',
+    READ = 'READ',
+    RESPONDED = 'RESPONDED'
 }
-interface ContactMessage { 
-  id: string; 
-  email: string; 
-  name: string; 
-  subject: string; 
-  message: string; 
-  status: MessageStatus; 
-  createdAt: string; 
+interface ContactMessage {
+    id: string;
+    email: string;
+    name: string;
+    subject: string;
+    message: string;
+    status: MessageStatus;
+    createdAt: string;
 }
 
 export default function ContactPage() {
@@ -95,7 +95,7 @@ export default function ContactPage() {
         setViewingMessage(message);
     };
 
-    const handleReplyClick = (message: ContactMessage) => { 
+    const handleReplyClick = (message: ContactMessage) => {
         setViewingMessage(null); // Close the view modal
         setReplyingToMessage(message); // Open the reply modal
     };
@@ -103,8 +103,8 @@ export default function ContactPage() {
     const handleDeleteClick = (message: ContactMessage) => {
         setMessageToDelete(message);
     };
-    
-    const confirmDelete = () => { 
+
+    const confirmDelete = () => {
         if (messageToDelete) {
             deleteMutation.mutate(messageToDelete.id);
         }
@@ -115,16 +115,16 @@ export default function ContactPage() {
         <>
             <div className="flex flex-col h-full">
                 {/* Section 1: The Sticky Header with All Filters */}
-                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex-shrink-0 sticky top-0 bg-slate-50 z-10 py-4 -mx-6 px-6 border-b border-slate-200">
+                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex-shrink-0 sticky top-0 bg-slate-50 z-10 py-2 px-4 border-b border-slate-200">
                     <PageHeader title="Contact Messages">
                         <div className="flex items-center gap-2 md:gap-4 flex-wrap">
-                             <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="p-2 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="p-2 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">All Statuses</option>
                                 <option value="UNREAD">Unread</option>
                                 <option value="READ">Read</option>
                                 <option value="RESPONDED">Responded</option>
                             </select>
-                             <select value={dateFilter} onChange={(e) => { setDateFilter(e.target.value); setPage(1); }} className="p-2 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select value={dateFilter} onChange={(e) => { setDateFilter(e.target.value); setPage(1); }} className="p-2 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">All Time</option>
                                 <option value="today">Today</option>
                                 <option value="yesterday">Yesterday</option>
@@ -140,14 +140,18 @@ export default function ContactPage() {
                 </motion.div>
 
                 {/* Section 2: The Scrollable Content */}
-                <div className="flex-grow overflow-y-auto">
-                    {isLoading ? <div className="flex justify-center items-center h-full"><Spinner /></div> : (
+                <div className="flex-grow overflow-y-auto mb-12">
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-full">
+                            <Spinner />
+                        </div>
+                    ) : (
                         <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} initial="hidden" animate="visible" className="p-6">
                             {messages.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                                     {messages.map((msg: ContactMessage) => (
-                                        <MessageCard 
-                                            key={msg.id} 
+                                        <MessageCard
+                                            key={msg.id}
                                             message={msg}
                                             onView={() => handleViewMessage(msg)}
                                             onReply={() => handleReplyClick(msg)}
@@ -165,10 +169,10 @@ export default function ContactPage() {
                         </motion.div>
                     )}
                 </div>
-                
+
                 {/* Section 3: The Sticky Pagination Footer */}
                 {pagination && pagination.totalPages > 1 && (
-                    <div className="flex-shrink-0 p-4 border-t border-slate-200 bg-slate-50/80 backdrop-blur-sm">
+                    <div className="fixed bottom-0 left-0 right-0 p-1.75 border-t border-slate-200 bg-slate-50/80 backdrop-blur-sm">
                         <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} onPageChange={(page) => setPage(page)} />
                     </div>
                 )}

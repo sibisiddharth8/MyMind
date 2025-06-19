@@ -81,22 +81,22 @@ export default function ProjectsPage() {
 
                 {/* Section 2: The Scrollable Content */}
                 <div className="flex-grow overflow-y-auto mb-12">
-                    {isLoading ? <div className="flex justify-center items-center h-full"><Spinner /></div> : (
-                        <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} initial="hidden" animate="visible" className="p-6">
-                            {projects.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                    {projects.map((proj: Project) => (
-                                        <ProjectCard key={proj.id} project={proj} onEdit={() => handleOpenEditModal(proj)} onDelete={() => handleDeleteClick(proj)} />
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="text-center py-16 px-2">
-                                    <h3 className="text-xl font-semibold text-slate-700">No Projects Found</h3>
-                                    <p className="text-slate-500 mt-2">No projects match your filters, or you haven't added any yet.</p>
-                                </div>
-                            )}
-                        </motion.div>
-                    )}
+                    <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} initial="hidden" animate="visible" className="p-6">
+                        {isLoading ? (
+                            <div className="flex justify-center items-center h-full pt-16"><Spinner /></div>
+                        ) : projects.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {projects.map((proj: Project) => (
+                                    <ProjectCard key={proj.id} project={proj} onEdit={() => handleOpenEditModal(proj)} onDelete={() => handleDeleteClick(proj)} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-16 px-2">
+                                <h3 className="text-xl font-semibold text-slate-700">No Projects Found</h3>
+                                <p className="text-slate-500 mt-2">No projects match your filters, or you haven't added any yet.</p>
+                            </div>
+                        )}
+                    </motion.div>
                 </div>
 
                 {/* Section 3: The Sticky Pagination Footer */}

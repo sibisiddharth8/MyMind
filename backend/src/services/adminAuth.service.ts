@@ -6,20 +6,34 @@ import nodemailer from 'nodemailer';
 
 const prisma = new PrismaClient();
 
-export const loginUser = async (email: string, pass: string) => {
-    // FIX: Use prisma.admin
-    const user = await prisma.admin.findUnique({ where: { email } });
-    if (!user) {
+// Local Type for login credentials
+interface LoginCredentials {
+  email: string;
+  pass: string;
+}
+
+export const loginUser = async ({ email, pass }: LoginCredentials) => {
+    const admin = await prisma.admin.findUnique({ where: { email } });
+    if (!admin) {
         throw new Error("Invalid admin credentials.");
     }
 
-    const isMatch = await bcrypt.compare(pass, user.password);
+    const isMatch = await bcrypt.compare(pass, admin.password);
     if (!isMatch) {
         throw new Error("Invalid admin credentials.");
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '1d' });
-    return token;
+    const aboutProfile = await prisma.about.findFirst();
+    const userProfile = {
+        id: admin.id,
+        email: admin.email,
+        name: aboutProfile?.name || 'Admin',
+        image: aboutProfile?.image || null,
+    };
+
+    const token = jwt.sign({ userId: admin.id }, process.env.JWT_SECRET!, { expiresIn: '1d' });
+    
+    return { token, user: userProfile, message: 'Admin login successful.' };
 };
 
 export const forgotPassword = async (email: string) => {

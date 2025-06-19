@@ -1,17 +1,36 @@
 import apiClient from './apiClient';
 
-// Type is defined here for this file's use only. Notice there is no 'export'.
+// --- Local Type Definitions ---
 interface LoginCredentials {
   email: string;
   password: string;
 }
 
-export const loginUser = async (credentials: LoginCredentials) => {
+interface ForgotPasswordData {
+  email: string;
+}
+
+interface ResetPasswordData {
+  token: string;
+  password: string;
+}
+
+// --- API Functions ---
+
+// This function calls the ADMIN login endpoint
+export const loginAdmin = async (credentials: LoginCredentials) => {
   const response = await apiClient.post('/auth/login', credentials);
+  return response.data; // This returns the { token, user, message } object from the API
+};
+
+// This function calls the ADMIN forgot password endpoint
+export const forgotAdminPassword = async (data: ForgotPasswordData) => {
+  const response = await apiClient.post('/auth/forgot-password', data);
   return response.data;
 };
 
-export const forgotPassword = async (email: string) => {
-  const response = await apiClient.post('/auth/forgot-password', { email });
+// This function calls the ADMIN reset password endpoint
+export const resetAdminPassword = async (data: ResetPasswordData) => {
+  const response = await apiClient.post(`/auth/reset-password/${data.token}`, { password: data.password });
   return response.data;
 };

@@ -164,12 +164,15 @@ model ContactMessage {
   message   String
   status    MessageStatus @default(UNREAD)
   
-  // --- This is the new relationship ---
   publicUserId String     @db.ObjectId
   publicUser   PublicUser @relation(fields: [publicUserId], references: [id])
 
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+
+  // --- ADD THIS LINE AT THE BOTTOM OF THE MODEL ---
+  // This tells Prisma to create a database index on the 'email' field.
+  @@index([email])
 }
 
 model TermAndCondition {

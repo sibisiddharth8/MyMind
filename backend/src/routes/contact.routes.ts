@@ -1,27 +1,31 @@
 import { Router } from 'express';
 import { protect } from '../middleware/auth.middleware';
 import { protectPublicUser } from '../middleware/protectPublicUser.middleware';
-import { 
+import {
     createMessageController,
     getAllMessagesController,
     getMessageByIdController,
-    updateMessageStatusController, // This controller already exists
+    getMessageStatsController,
+    updateMessageStatusController,
     replyToMessageController,
-    deleteMessageController 
+    deleteMessageController
 } from '../controllers/contact.controller';
 
 const router = Router();
 
-// Public User Route
+// --- PUBLIC ROUTE ---
 router.post('/contact', protectPublicUser, createMessageController);
 
-// Admin Routes
+// --- PROTECTED ADMIN ROUTES ---
 router.get('/contact', protect, getAllMessagesController);
+
+// --- THIS IS THE FIX ---
+// The specific static route '/stats' must come BEFORE the dynamic route '/:id'.
+router.get('/contact/stats', protect, getMessageStatsController);
 router.get('/contact/:id', protect, getMessageByIdController);
+
+router.patch('/contact/:id/status', protect, updateMessageStatusController);
 router.post('/contact/:id/reply', protect, replyToMessageController);
 router.delete('/contact/:id', protect, deleteMessageController);
-
-// --- ADD THIS NEW ROUTE ---
-router.patch('/contact/:id/status', protect, updateMessageStatusController);
 
 export default router;

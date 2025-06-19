@@ -4,8 +4,12 @@ import * as adminAuthService from '../services/adminAuth.service';
 export const loginController = async (req: Request, res: Response): Promise<void> => {
     try {
         const { email, password } = req.body;
-        const token = await adminAuthService.loginUser(email, password);
-        res.status(200).json({ message: "Admin login successful.", token });
+        
+        // FIX: We now pass a single object to the service function
+        const response = await adminAuthService.loginUser({ email, pass: password });
+
+        // Forward the entire successful response { token, user, message } to the frontend
+        res.status(200).json(response);
     } catch (error: any) {
         res.status(401).json({ message: error.message });
     }

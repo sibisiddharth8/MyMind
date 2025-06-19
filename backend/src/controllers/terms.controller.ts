@@ -4,6 +4,7 @@ import { TermData } from '../services/terms.service';
 import fs from 'fs';
 import path from 'path';
 
+// Helper function to delete a file if it exists
 const deleteFile = (filePath: string | null | undefined) => {
   if (!filePath) return;
   const fullPath = path.resolve(filePath);
@@ -37,25 +38,44 @@ export const getAllTermsController = async (req: Request, res: Response): Promis
     }
 };
 
+// --- THIS FUNCTION IS NOW FULLY IMPLEMENTED ---
 export const updateTermController = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const payload: TermData = { ...req.body };
-        if (req.file) {
-            const oldTerm = await termsService.getTermById(id);
-            deleteFile(oldTerm?.imagePath);
+        const oldTerm = await termsService.getTermById(id);
+        if (!oldTerm) {
+            res.status(404).json({ message: "Term not found." });
+            return;
+        }
+
+        const payload: TermData = {};
+
+        if (req.body.title) payload.title = req.body.title;
+        if (req.body.content) payload.content = req.body.content;
+
+        // FIX: This new logic handles removing an existing image
+        if (req.body.removeImage === 'true') {
+            deleteFile(oldTerm.imagePath);
+            payload.imagePath = null;
+        } else if (req.file) {
+            deleteFile(oldTerm.imagePath);
             payload.imagePath = req.file.path.replace(/\\/g, "/");
         }
+
         const updatedTerm = await termsService.updateTerm(id, payload);
         res.status(200).json({ message: "Term updated successfully.", data: updatedTerm });
     } catch (error) {
+        console.error("--- ERROR UPDATING TERM ---", error);
         res.status(500).json({ message: "Error updating term.", error });
     }
 };
 
+// --- THIS FUNCTION IS NOW FULLY IMPLEMENTED ---
 export const updateTermOrderController = async (req: Request, res: Response): Promise<void> => {
     try {
-        const termOrders: { id: string, order: number }[] = req.body;
+        // FIX: Correctly gets the array from the request body
+        const { termOrders } = req.body;
+
         if (!Array.isArray(termOrders) || termOrders.length === 0) {
             res.status(400).json({ message: "Request body must be an array of { id, order } objects." });
             return;
@@ -63,6 +83,7 @@ export const updateTermOrderController = async (req: Request, res: Response): Pr
         await termsService.updateTermOrder(termOrders);
         res.status(200).json({ message: "Term order updated successfully." });
     } catch (error) {
+        console.error("--- ERROR UPDATING TERM ORDER ---", error);
         res.status(500).json({ message: "Error updating term order.", error });
     }
 };

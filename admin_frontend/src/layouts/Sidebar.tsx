@@ -25,83 +25,55 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isSidebarOpen, setSidebarOpen }: SidebarProps) {
-  // --- STATE MANAGEMENT ---
-
-  // State for desktop collapse behavior
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
-
-  // Change 1: Add state to track if we are in a mobile viewport.
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
 
-  // --- DERIVED STATE ---
-
-  // This computed value determines if the sidebar should be in its expanded state on DESKTOP
   const isExpanded = !isCollapsed || isHovered;
-
-  // Change 2: This new value determines if text labels should be visible.
-  // Show text if it's expanded on desktop OR if it's a mobile view.
+  // On mobile, the sidebar is always "expanded" visually, even if the state is collapsed
   const shouldShowText = isExpanded || isMobileView;
 
-  // --- EFFECTS ---
-
-  // Change 3: Add an effect to listen for window resize events.
-  // This makes our component responsive to screen size changes (e.g., device rotation).
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobileView(window.innerWidth < 768);
-    };
+    const handleResize = () => setIsMobileView(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handleMouseEnter = () => { if (isCollapsed && !isMobileView) setIsHovered(true); };
+  const handleMouseLeave = () => { if (isCollapsed && !isMobileView) setIsHovered(false); };
+  const toggleCollapse = () => { setIsCollapsed(!isCollapsed); setIsHovered(false); };
 
-  // --- EVENT HANDLERS ---
-
-  const handleMouseEnter = () => {
-    if (isCollapsed) setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    if (isCollapsed) setIsHovered(false);
-  };
-
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-    setIsHovered(false);
-  };
-
-  // --- RENDER LOGIC ---
-
-  const linkClasses = "flex items-center px-4 py-2.5 text-slate-600 hover:bg-slate-100 hover:text-blue-600 rounded-lg transition-colors duration-200";
-  const activeLinkClasses = "bg-blue-100 text-blue-600 font-semibold";
+  // FIX FOR TEXT JIGGLE: font-semibold is now the base style for all links.
+  const linkClasses = "flex items-center w-full overflow-hidden px-4 py-2.5 text-slate-600 hover:bg-slate-100 hover:text-blue-600 rounded-lg transition-colors duration-200 font-semibold";
+  // FIX FOR TEXT JIGGLE: font-semibold is removed from the active state.
+  const activeLinkClasses = "bg-blue-100 text-blue-600";
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
-      {/* Change 4: Use `shouldShowText` to conditionally render header and center icons */}
       <div className={`flex items-center h-16 px-4 border-b border-slate-200 transition-all duration-300 ${!shouldShowText ? 'justify-center' : 'justify-between'}`}>
-        {shouldShowText && <h1 className="text-xl font-bold text-slate-800">Logo</h1>}
+        {/* The opacity transition makes the logo fade in and out smoothly */}
+        {/* <span className={`text-xl font-bold text-slate-800 transition-opacity duration-200 ${shouldShowText ? 'opacity-100' : 'opacity-0'}`}>
+            Sibi's Portal
+        </span> */}
         <button onClick={() => setSidebarOpen(false)} className="md:hidden text-slate-500">
           <FiX size={24} />
         </button>
       </div>
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-4">
         {navLinks.map((link) => (
           <NavLink
             key={link.label}
             to={link.to}
             end={link.to === '/'}
-            // Change 5: Use `shouldShowText` for alignment and text visibility
             className={({ isActive }) => `${linkClasses} ${!shouldShowText ? 'justify-center' : ''} ${isActive ? activeLinkClasses : ''}`}
-            onClick={() => {
-              if (isMobileView) { // Use our state variable here
-                  setSidebarOpen(false);
-              }
-            }}
+            onClick={() => { if (isMobileView) setSidebarOpen(false); }}
             title={!shouldShowText ? link.label : undefined}
           >
-            <link.icon className="w-5 h-5" />
-            {shouldShowText && <span className="mx-4 font-medium">{link.label}</span>}
+            <link.icon className="w-5 h-5 flex-shrink-0" />
+            {/* FIX FOR TEXT POP-IN: The span now transitions its opacity and margin smoothly */}
+            <span className={`transition-all duration-200 whitespace-nowrap ${shouldShowText ? 'ml-4 opacity-100 mb-0.5' : 'ml-0 w-0 opacity-0'}`}>
+              {link.label}
+            </span>
           </NavLink>
         ))}
       </nav>
@@ -121,15 +93,15 @@ export default function Sidebar({ isSidebarOpen, setSidebarOpen }: SidebarProps)
   return (
     <>
       {/* Mobile Sidebar (Overlay) */}
-      <div className={`fixed inset-0 bg-black/50 z-20 transition-opacity md:hidden ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setSidebarOpen(false)}></div>
+      <div className={`fixed inset-0 bg-black/40 z-20 transition-opacity md:hidden ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} onClick={() => setSidebarOpen(false)}></div>
 
-      {/* Main Sidebar (No changes needed here from last version) */}
+      {/* Main Sidebar */}
       <aside
         className={
-          `fixed inset-y-0 z-30 bg-white shadow-lg transform transition-all duration-300 ease-in-out
-          right-0 w-64 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
+          `fixed inset-y-0 right-0 z-30 bg-white shadow-lg transform transition-all duration-300 ease-in-out
           md:left-0 md:relative md:translate-x-0
-          ${isExpanded ? 'md:w-64' : 'md:w-20'}`
+          ${isExpanded ? 'md:w-64' : 'md:w-20'}
+          ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`
         }
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
