@@ -14,6 +14,13 @@ const sortProjects = (projects: any[]) => {
   });
 };
 
+export const updateProjectCategory = ({ id, name }: { id: string; name: string }) => {
+    return prisma.projectCategory.update({
+        where: { id },
+        data: { name },
+    });
+};
+
 // --- Category Services --- (no changes here)
 export const createProjectCategory = (name: string) => prisma.projectCategory.create({ data: { name } });
 export const getAllProjectCategories = () => prisma.projectCategory.findMany();

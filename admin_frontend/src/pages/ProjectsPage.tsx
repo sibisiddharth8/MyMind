@@ -11,6 +11,7 @@ import ConfirmationModal from '../components/modals/ConfirmationModal';
 import Pagination from '../components/ui/Pagination';
 import ProjectCard from '../components/projects/ProjectCard';
 import ProjectFormModal from '../components/projects/ProjectFormModal';
+import CategoryManagerModal from '../components/projects/CategoryManagerModal';
 import { getProjects, getProjectCategories, deleteProject } from '../services/projectService';
 
 // Local Type Definitions
@@ -27,6 +28,7 @@ export default function ProjectsPage() {
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
     const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+    const [isCategoryManagerOpen, setCategoryManagerOpen] = useState(false);
 
     // Debouncing for search input
     useEffect(() => {
@@ -74,6 +76,7 @@ export default function ProjectsPage() {
                                 <FiSearch className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
                                 <input type="text" placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10 pr-4 py-2 w-40 sm:w-64 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                             </div>
+                            <Button variant="secondary" onClick={() => setCategoryManagerOpen(true)}>Manage Categories</Button>
                             <Button onClick={handleOpenCreateModal}><FiPlus className="mr-2"/>Add Project</Button>
                         </div>
                     </PageHeader>
@@ -83,7 +86,7 @@ export default function ProjectsPage() {
                 <div className="flex-grow overflow-y-auto mb-12">
                     <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} initial="hidden" animate="visible" className="p-6">
                         {isLoading ? (
-                            <div className="flex justify-center items-center h-full pt-16"><Spinner /></div>
+                            <Spinner overlay={true} text="Loading Project Details..." />
                         ) : projects.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {projects.map((proj: Project) => (
@@ -108,6 +111,7 @@ export default function ProjectsPage() {
             </div>
 
             <ProjectFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} projectToEdit={projectToEdit} />
+            <CategoryManagerModal isOpen={isCategoryManagerOpen} onClose={() => setCategoryManagerOpen(false)} />
             <ConfirmationModal isOpen={isDeleteModalOpen} onClose={() => setDeleteModalOpen(false)} onConfirm={confirmDelete} title="Delete Project" message={`Are you sure you want to delete the project "${projectToDelete?.name}"? This action cannot be undone.`} />
         </>
     );

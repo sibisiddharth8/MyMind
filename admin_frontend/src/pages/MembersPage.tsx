@@ -89,7 +89,7 @@ export default function MembersPage() {
 
                 {/* Section 2: Main Content (Scrollable) */}
                 <div className="flex-grow overflow-y-auto">
-                    {isLoading ? <div className="flex justify-center items-center h-full"><Spinner /></div> : (
+                    {isLoading ? <Spinner overlay={true} text="Loading Member Details..." /> : (
                         <motion.div 
                             variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
                             initial="hidden"

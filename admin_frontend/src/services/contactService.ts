@@ -22,15 +22,19 @@ interface ApiResponse {
 }
 
 // Fetches all messages with filtering and pagination
-export const getMessages = async ({ page = 1, limit = 10, status, search }: {
-    page: number,
-    limit: number,
-    status?: string,
-    search?: string
-}): Promise<ApiResponse> => {
-    const { data } = await apiClient.get('/contact', { params: { page, limit, status, search }});
+export const getMessages = async ({ page = 1, limit = 10, status, search, dateFilter }: {
+    page: number;
+    limit: number;
+    status?: string;
+    search?: string;
+    dateFilter?: string;
+}) => {
+    
+    const { data } = await apiClient.get('/contact', { params: { page, limit, status, search, dateFilter }});
     return data;
 };
+
+
 
 // Fetches a single message by ID
 export const getMessageById = async (id: string): Promise<ApiResponse> => {

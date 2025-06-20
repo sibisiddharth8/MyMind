@@ -66,19 +66,20 @@ export default function EducationPage() {
     return (
         <>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                <PageHeader title="Education History">
+                <div className='flex items-center justify-between'>
+                    <PageHeader title="Education History"></PageHeader>
                     <Button onClick={() => handleOpenModal()}>
-                        <FiPlus className="mr-2" />
-                        Add Education
+                        <FiPlus className="my-1" />
+                        <span className='hidden sm:block'>Add Education</span>
                     </Button>
-                </PageHeader>
+                </div>
             </motion.div>
 
             {isLoading ? (
-                <div className="flex justify-center items-center h-64"><Spinner /></div>
+                <Spinner overlay={true} text="Loading Education Details..." />
             ) : (
                 <motion.div 
-                    className="space-y-6"
+                    className="space-y-6 mt-2"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}

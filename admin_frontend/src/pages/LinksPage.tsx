@@ -75,7 +75,7 @@ export default function LinksPage() {
     updateMutation.mutate(formData);
   };
   
-  if (isLoading) return <div className="flex justify-center items-center h-64"><Spinner /> <span className="ml-4 text-slate-500">Loading...</span></div>;
+  if (isLoading) return <Spinner overlay={true} text="Loading Link Details..." />;
 
   return (
     <>

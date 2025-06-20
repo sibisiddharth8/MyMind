@@ -75,17 +75,21 @@ export default function SkillsPage() {
         setDeleteModalOpen(false);
     };
 
-    if (isLoading) return <div className="flex justify-center items-center h-64"><Spinner /></div>;
+    if (isLoading) return <Spinner overlay={true} text="Loading Skill Details..." />;
 
     return (
         <>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                <PageHeader title="Skills">
-                    <Button onClick={handleAddCategory}><FiPlus className="mr-2" />Add Category</Button>
-                </PageHeader>
+                <div className='flex items-center justify-between'>
+                    <PageHeader title="Skills"></PageHeader>
+                    <Button onClick={handleAddCategory}>
+                        <FiPlus className="my-1" />
+                        <span className="hidden sm:block">Add Category</span>
+                    </Button>
+                </div>
             </motion.div>
 
-            <div className="space-y-8">
+            <div className="space-y-6 mt-2">
                 {categories.length > 0 ? categories.map((category: SkillCategory) => (
                     <motion.div key={category.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                         <div className="bg-white p-6 rounded-xl shadow-md">

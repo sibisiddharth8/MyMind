@@ -4,7 +4,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { FiX, FiSave, FiLink } from 'react-icons/fi';
+import { FiX, FiSave, FiBriefcase, FiTag, FiLink, FiCalendar } from 'react-icons/fi';
+import { FaBuilding } from 'react-icons/fa'; // <-- FIX: Import from the correct icon set
 import { createExperience, updateExperience } from '../../services/experienceService';
 import Button from '../ui/Button';
 import FileUpload from '../ui/FileUpload';
@@ -12,7 +13,7 @@ import FileUpload from '../ui/FileUpload';
 // Local type definition to avoid import issues
 interface Experience {
   id: string;
-  logo: string;
+  logo: string | null;
   role: string;
   companyName: string;
   companyLink?: string | null;
@@ -24,7 +25,7 @@ interface Experience {
 
 type ExperienceFormData = Omit<Experience, 'id' | 'logo' | 'skills'> & {
     logo?: File | null | 'remove';
-    skills: string; // Handle skills as a comma-separated string in the form
+    skills: string;
 };
 
 interface ExperienceFormModalProps {
@@ -33,13 +34,12 @@ interface ExperienceFormModalProps {
   experienceToEdit?: Experience | null;
 }
 
-// Helper function to format date strings for <input type="date">
 const formatDateForInput = (dateString?: string | null): string => {
     if (!dateString) return '';
     try {
         return new Date(dateString).toISOString().split('T')[0];
     } catch (error) {
-        return ''; // Return empty string if date is invalid
+        return '';
     }
 };
 
@@ -96,89 +96,56 @@ export default function ExperienceFormModal({ isOpen, onClose, experienceToEdit 
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
         <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
-            <div className="fixed inset-0 bg-black/40" />
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
-                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                    <Dialog.Title as="h3" className="text-lg font-bold leading-6 text-slate-900 flex justify-between items-center">
+                <Dialog.Panel className="w-full max-w-2xl transform rounded-2xl bg-white text-left align-middle shadow-xl transition-all flex flex-col max-h-[90vh]">
+                    <Dialog.Title as="h3" className="text-lg font-bold leading-6 text-slate-900 flex justify-between items-center p-5 border-b border-slate-300 flex-shrink-0">
                         {experienceToEdit ? 'Edit Experience' : 'Add New Experience'}
-                        <button onClick={onClose} className="p-1 rounded-full hover:bg-slate-100"><FiX /></button>
+                        <button onClick={onClose} className="p-1 rounded-full hover:bg-slate-100 cursor-pointer"><FiX /></button>
                     </Dialog.Title>
                     
-                    <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="text-sm font-medium text-slate-600">Role</label>
-                                <Controller name="role" control={control} render={({ field }) => <input {...field} placeholder="e.g., Software Engineer" className="mt-1 w-full p-2 border border-slate-300 rounded-lg"/>}/>
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-slate-600">Company Name</label>
-                                <Controller name="companyName" control={control} render={({ field }) => <input {...field} placeholder="e.g., Google" className="mt-1 w-full p-2 border border-slate-300 rounded-lg"/>}/>
-                            </div>
-                        </div>
+                    <form id="experience-form" onSubmit={handleSubmit(onSubmit)} className="px-6 py-4 overflow-y-auto flex-grow">
+                        <div className="space-y-6">
+                            <fieldset className="space-y-4">
+                                <legend className="text-base font-semibold text-slate-700">Role & Company</legend>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Controller name="role" control={control} render={({ field }) => <div className="relative"><FiBriefcase className="absolute top-3 left-3 text-slate-400" /><input {...field} placeholder="Role" className="w-full p-2 pl-10 border rounded-lg"/></div>}/>
+                                    {/* FIX: Using FaBuilding icon now */}
+                                    <Controller name="companyName" control={control} render={({ field }) => <div className="relative"><FaBuilding className="absolute top-3 left-3 text-slate-400" /><input {...field} placeholder="Company Name" className="w-full p-2 pl-10 border rounded-lg"/></div>}/>
+                                </div>
+                                <Controller name="companyLink" control={control} render={({ field }) => <div className="relative"><FiLink className="absolute top-3 left-3 text-slate-400" /><input {...field} value={field.value || ''} placeholder="Company Website (Optional)" className="w-full p-2 pl-10 border rounded-lg"/></div>}/>
+                            </fieldset>
 
-                        {/* --- THIS IS THE NEWLY ADDED FIELD --- */}
-                        <div className="relative">
-                           <label htmlFor="companyLink" className="text-sm font-medium text-slate-600">Company Website/Link (Optional)</label>
-                           <FiLink className="absolute top-9 left-3 text-slate-400" />
-                           <Controller name="companyLink" control={control} render={({ field }) => <input {...field} value={field.value || ''} id="companyLink" placeholder="https://example.com" className="w-full p-2 pl-10 border border-slate-300 rounded-lg mt-1"/>}/>
-                        </div>
+                            <fieldset className="space-y-4 pt-4 border-t">
+                                <legend className="text-base font-semibold text-slate-700 pr-2">Duration</legend>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Controller name="startDate" control={control} render={({ field }) => <div className="relative"><FiCalendar className="absolute top-3 left-3 text-slate-400" /><input {...field} type="date" className="w-full p-2 pl-10 border rounded-lg text-slate-500"/></div>}/>
+                                    <div className={`${isCurrentJob && 'opacity-40'}`}><Controller name="endDate" control={control} render={({ field }) => <div className="relative"><FiCalendar className="absolute top-3 left-3 text-slate-400" /><input {...field} type="date" disabled={isCurrentJob} className="w-full p-2 pl-10 border rounded-lg text-slate-500"/></div>}/></div>
+                                </div>
+                                <div className="flex items-center gap-2"><input id="currentJob" type="checkbox" checked={isCurrentJob} onChange={(e) => setValue('endDate', e.target.checked ? 'present' : formatDateForInput(new Date().toISOString()), { shouldDirty: true })} className="h-4 w-4 rounded"/><label htmlFor="currentJob">I currently work here</label></div>
+                            </fieldset>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                             <div>
-                                <label className="text-sm font-medium text-slate-600">Start Date</label>
-                                <Controller name="startDate" control={control} render={({ field }) => <input {...field} type="date" className="mt-1 w-full p-2 border border-slate-300 rounded-lg text-slate-500"/>}/>
-                            </div>
-                             <div>
-                                <label className="text-sm font-medium text-slate-600">End Date</label>
-                                {!isCurrentJob && (
-                                    <Controller name="endDate" control={control} render={({ field }) => <input {...field} type="date" className="mt-1 w-full p-2 border border-slate-300 rounded-lg text-slate-500"/>}/>
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                             <input 
-                                id="currentJob"
-                                type="checkbox"
-                                checked={isCurrentJob}
-                                onChange={(e) => {
-                                    setValue('endDate', e.target.checked ? 'present' : formatDateForInput(new Date().toISOString()), { shouldDirty: true });
-                                }}
-                                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                            />
-                            <label htmlFor="currentJob" className="text-sm text-slate-700">I currently work here</label>
-                        </div>
-                        
-                        <div>
-                            <label className="text-sm font-medium text-slate-600">Description</label>
-                            <Controller name="description" control={control} render={({ field }) => <textarea {...field} rows={4} placeholder="Description of your role and achievements..." className="mt-1 w-full p-2 border border-slate-300 rounded-lg"/>}/>
-                        </div>
-                        <div>
-                            <label className="text-sm font-medium text-slate-600">Skills Used (comma-separated)</label>
-                            <Controller name="skills" control={control} render={({ field }) => <input {...field} placeholder="e.g., React, Node.js, Python" className="mt-1 w-full p-2 border border-slate-300 rounded-lg"/>}/>
-                        </div>
-                        
-                        <Controller name="logo" control={control} render={({ field: { onChange } }) => (
-                            <FileUpload
-                                label="Company Logo"
-                                accept="image/*"
-                                fileType="image"
-                                existingFileUrl={typeof experienceToEdit?.logo === 'string' ? `${assetBaseUrl}/${experienceToEdit.logo}` : null}
-                                onFileChange={onChange}
-                                onRemove={() => onChange('remove')}
-                            />
-                        )}/>
-
-                        <div className="flex justify-end gap-4 pt-4 border-t">
-                            <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-                            <Button type="submit" isLoading={mutation.isPending} disabled={!isDirty}>
-                                <FiSave className="mr-2"/>
-                                {experienceToEdit ? 'Save Changes' : 'Create Experience'}
-                            </Button>
+                            <fieldset className="space-y-4 pt-4 border-t">
+                                <legend className="text-base font-semibold text-slate-700 pr-2">Details</legend>
+                                <Controller name="description" control={control} render={({ field }) => <div><label className="text-sm font-medium text-slate-600">Description</label><textarea {...field} rows={4} placeholder="Your role and achievements..." className="mt-1 w-full p-2 border rounded-lg"/></div>}/>
+                                <Controller name="skills" control={control} render={({ field }) => <div><label className="text-sm font-medium text-slate-600">Skills Used (comma-separated)</label><div className="relative mt-1"><FiTag className="absolute top-3 left-3 text-slate-400" /><input {...field} placeholder="e.g., React, Node.js, Python" className="w-full p-2 pl-10 border rounded-lg"/></div></div>}/>
+                                <Controller name="logo" control={control} render={({ field: { onChange } }) => (
+                                    <FileUpload label="Company Logo" accept="image/*" fileType="image" existingFileUrl={typeof experienceToEdit?.logo === 'string' ? `${assetBaseUrl}/${experienceToEdit.logo}` : null} onFileChange={onChange} onRemove={() => onChange('remove')} />
+                                )}/>
+                            </fieldset>
                         </div>
                     </form>
+                    
+                    <div className="flex-shrink-0 p-4 flex justify-end gap-4 border-t border-slate-300 bg-slate-50 rounded-b-2xl">
+                        <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+                        <Button form="experience-form" type="submit" isLoading={mutation.isPending} disabled={!isDirty}>
+                            <FiSave className="mr-2"/>
+                            {experienceToEdit ? 'Save Changes' : 'Create Experience'}
+                        </Button>
+                    </div>
                 </Dialog.Panel>
             </div>
         </div>

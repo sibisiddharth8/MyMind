@@ -11,6 +11,7 @@ import {
     deleteProjectController,
     createProjectCategoryController,
     getAllProjectCategoriesController,
+    updateProjectCategoryController,
     getProjectCategorySummariesController,
     deleteProjectCategoryController
 } from '../controllers/project.controller';
@@ -21,6 +22,7 @@ const router = Router();
 router.get('/project-categories', getAllProjectCategoriesController);
 router.get('/project-categories/summary', getProjectCategorySummariesController);
 router.post('/project-categories', protect, createProjectCategoryController);
+router.put('/project-categories/:id', protect, updateProjectCategoryController);
 router.delete('/project-categories/:id', protect, deleteProjectCategoryController);
 
 // Project Routes

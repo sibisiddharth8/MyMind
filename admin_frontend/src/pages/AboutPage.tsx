@@ -86,7 +86,7 @@ export default function AboutPage() {
     updateMutation.mutate(dataToSubmit);
   };
   
-  if (isLoading) return <div className="flex justify-center items-center h-64"><Spinner /> <span className="ml-4 text-slate-500">Loading...</span></div>;
+  if (isLoading) return <Spinner overlay={true} text="Loading About Details..." />;
 
   return (
     <>

@@ -20,17 +20,18 @@ export const createMessageController = async (req: PublicAuthRequest, res: Respo
 
 export const getAllMessagesController = async (req: Request, res: Response): Promise<void> => {
     try {
+        // THIS IS THE NEW LOGGING LINE
+
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
         const email = req.query.email as string | undefined;
         const status = req.query.status as MessageStatus | undefined;
         const searchQuery = req.query.search as string | undefined;
-        const dateFilter = req.query.dateFilter as string | undefined; // <-- ADD THIS
-
-        const result = await contactService.getAllMessages({ page, limit, email, status, searchQuery, dateFilter }); // <-- PASS IT
+        const dateFilter = req.query.dateFilter as string | undefined;
+        
+        const result = await contactService.getAllMessages({ page, limit, email, status, searchQuery, dateFilter });
         res.status(200).json({ message: "Messages retrieved successfully.", ...result });
     } catch (error) {
-        console.error("--- ERROR FETCHING CONTACT MESSAGES ---", error);
         res.status(500).json({ message: "Error retrieving messages.", error });
     }
 };

@@ -61,7 +61,7 @@ export const deleteProjectCategoryController = async (req: Request, res: Respons
         } else if (error.code === 'P2003') { // Foreign key constraint failed (onDelete: Restrict)
             res.status(400).json({ message: 'Cannot delete category as it contains projects.' });
         } else {
-            res.status(500).json({ message: 'Error deleting project category.', error });
+            res.status(500).json({ message: 'Cannot delete category as it contains projects.', error });
         }
     }
 };
@@ -207,5 +207,27 @@ export const deleteProjectController = async (req: Request, res: Response): Prom
         }
     } catch (error) {
         res.status(500).json({ message: "Error deleting project.", error });
+    }
+};
+
+export const updateProjectCategoryController = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+        if (!name) {
+            res.status(400).json({ message: 'Category name is required.' });
+            return;
+        }
+        const category = await projectService.updateProjectCategory({ id, name });
+        res.status(200).json({ message: "Category updated successfully.", data: category });
+    } catch (error: any) {
+        if (error.code === 'P2025') { // Prisma code for record not found
+            res.status(404).json({ message: "Category not found." });
+        } else if (error.code === 'P2002') { // Unique constraint failed
+             res.status(409).json({ message: 'A category with this name already exists.' });
+        } else {
+            console.error("--- ERROR UPDATING PROJECT CATEGORY ---", error);
+            res.status(500).json({ message: "Error updating category.", error });
+        }
     }
 };

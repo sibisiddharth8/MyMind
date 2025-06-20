@@ -48,3 +48,12 @@ export const updateProject = async ({ id, formData }: { id: string; formData: Fo
 export const deleteProject = async (id: string): Promise<void> => {
     await apiClient.delete(`/projects/${id}`);
 };
+
+export const updateProjectCategory = async ({ id, name }: { id: string; name: string }): Promise<ApiResponse> => {
+  const { data } = await apiClient.put(`/project-categories/${id}`, { name });
+  return data;
+};
+
+export const deleteProjectCategory = async (id: string): Promise<void> => {
+  await apiClient.delete(`/project-categories/${id}`);
+};

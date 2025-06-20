@@ -4,22 +4,23 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { FiX, FiSave, FiLink, FiAward, FiBookOpen } from 'react-icons/fi';
+import { FiX, FiSave, FiTag, FiLink, FiCalendar, FiAward, FiBookOpen } from 'react-icons/fi';
+import { FaUniversity } from 'react-icons/fa'; // A better icon for Institution
 import { createEducation, updateEducation } from '../../services/educationService';
 import Button from '../ui/Button';
 import FileUpload from '../ui/FileUpload';
 
-// Local type definition to avoid import/export issues
+// Local type definition
 interface Education {
   id: string;
+  logo: string | null;
   institutionName: string;
   courseName: string;
-  logo: string | null; // <-- ADD '| null' HERE
+  institutionLink?: string | null;
   startDate: string;
   endDate?: string | null;
   description: string;
   grade: string;
-  institutionLink?: string | null;
 }
 
 type EducationFormData = Omit<Education, 'id' | 'logo'> & {
@@ -32,7 +33,6 @@ interface EducationFormModalProps {
   educationToEdit?: Education | null;
 }
 
-// Helper function to format date strings for <input type="date">
 const formatDateForInput = (dateString?: string | null): string => {
     if (!dateString) return '';
     try {
@@ -47,11 +47,9 @@ export default function EducationFormModal({ isOpen, onClose, educationToEdit }:
   const { control, handleSubmit, reset, watch, setValue, formState: { isDirty } } = useForm<EducationFormData>();
   const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
-  // Watch the value of endDate to determine if the checkbox should be checked
   const endDateValue = watch('endDate');
   const isCurrent = endDateValue === 'present' || endDateValue === null;
 
-  // This effect now correctly formats dates and handles the 'present' state
   useEffect(() => {
     if (isOpen) {
         if (educationToEdit) {
@@ -61,8 +59,7 @@ export default function EducationFormModal({ isOpen, onClose, educationToEdit }:
                 endDate: educationToEdit.endDate ? formatDateForInput(educationToEdit.endDate) : 'present',
             });
         } else {
-            // Default to 'present' for new entries
-            reset({ institutionName: '', courseName: '', startDate: '', endDate: 'present', description: '', grade: '', institutionLink: '' });
+            reset({ institutionName: '', courseName: '', institutionLink: '', startDate: '', endDate: 'present', description: '', grade: '' });
         }
     }
   }, [educationToEdit, isOpen, reset]);
@@ -80,7 +77,6 @@ export default function EducationFormModal({ isOpen, onClose, educationToEdit }:
 
   const onSubmit: SubmitHandler<EducationFormData> = (data) => {
     const formData = new FormData();
-    // Append all fields to FormData
     (Object.keys(data) as Array<keyof EducationFormData>).forEach(key => {
         const value = data[key];
         if (key === 'logo' && value instanceof File) {
@@ -98,89 +94,55 @@ export default function EducationFormModal({ isOpen, onClose, educationToEdit }:
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
         <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
-            <div className="fixed inset-0 bg-black/40" />
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
-                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                    <Dialog.Title as="h3" className="text-lg font-bold leading-6 text-slate-900 flex justify-between items-center">
+                <Dialog.Panel className="w-full max-w-2xl transform rounded-2xl bg-white text-left align-middle shadow-xl transition-all flex flex-col max-h-[90vh]">
+                    <Dialog.Title as="h3" className="text-lg font-bold leading-6 text-slate-900 flex justify-between items-center p-5 border-b border-slate-300 flex-shrink-0">
                         {educationToEdit ? 'Edit Education' : 'Add New Education'}
-                        <button onClick={onClose} className="p-1 rounded-full hover:bg-slate-100"><FiX /></button>
+                        <button onClick={onClose} className="p-1 rounded-full hover:bg-slate-100 cursor-pointer"><FiX /></button>
                     </Dialog.Title>
                     
-                    <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="text-sm font-medium text-slate-600">Institution Name</label>
-                                <Controller name="institutionName" control={control} render={({ field }) => <input {...field} placeholder="e.g., University of Technology" className="mt-1 w-full p-2 border border-slate-300 rounded-lg"/>}/>
-                            </div>
-                            <div>
-                                <label className="text-sm font-medium text-slate-600">Course Name</label>
-                                <Controller name="courseName" control={control} render={({ field }) => <input {...field} placeholder="e.g., B.S. in Computer Science" className="mt-1 w-full p-2 border border-slate-300 rounded-lg"/>}/>
-                            </div>
-                        </div>
+                    <form id="education-form" onSubmit={handleSubmit(onSubmit)} className="px-6 py-4 overflow-y-auto flex-grow">
+                        <div className="space-y-6">
+                            <fieldset className="space-y-4">
+                                <legend className="text-base font-semibold text-slate-700">Institution & Course</legend>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Controller name="institutionName" control={control} render={({ field }) => <div className="relative"><FaUniversity className="absolute top-3 left-3 text-slate-400" /><input {...field} placeholder="Institution Name" className="w-full p-2 pl-10 border rounded-lg"/></div>}/>
+                                    <Controller name="courseName" control={control} render={({ field }) => <div className="relative"><FiBookOpen className="absolute top-3 left-3 text-slate-400" /><input {...field} placeholder="Course Name" className="w-full p-2 pl-10 border rounded-lg"/></div>}/>
+                                </div>
+                                <Controller name="institutionLink" control={control} render={({ field }) => <div className="relative"><FiLink className="absolute top-3 left-3 text-slate-400" /><input {...field} value={field.value || ''} placeholder="Institution Website (Optional)" className="w-full p-2 pl-10 border rounded-lg"/></div>}/>
+                            </fieldset>
 
-                        <div className="relative">
-                           <label htmlFor="institutionLink" className="text-sm font-medium text-slate-600">Institution Website (Optional)</label>
-                           <FiLink className="absolute top-9 left-3 text-slate-400" />
-                           <Controller name="institutionLink" control={control} render={({ field }) => <input {...field} value={field.value || ''} id="institutionLink" placeholder="https://university.edu" className="w-full p-2 pl-10 border border-slate-300 rounded-lg mt-1"/>}/>
-                        </div>
+                            <fieldset className="space-y-4 pt-4 border-t text-slate-400">
+                                <legend className="text-base font-semibold text-slate-700 pr-2">Duration</legend>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Controller name="startDate" control={control} render={({ field }) => <div className="relative"><FiCalendar className="absolute top-3 left-3 text-slate-400" /><input {...field} type="date" className="w-full p-2 pl-10 border rounded-lg text-slate-500"/></div>}/>
+                                    <div className={`${isCurrent && 'opacity-40'}`}><Controller name="endDate" control={control} render={({ field }) => <div className="relative"><FiCalendar className="absolute top-3 left-3 text-slate-400" /><input {...field} type="date" disabled={isCurrent} className="w-full p-2 pl-10 border rounded-lg text-slate-500"/></div>}/></div>
+                                </div>
+                                <div className="flex items-center gap-2"><input id="currentStudy" type="checkbox" checked={isCurrent} onChange={(e) => setValue('endDate', e.target.checked ? 'present' : formatDateForInput(new Date().toISOString()), { shouldDirty: true })} className="h-4 w-4 rounded"/><label htmlFor="currentStudy">I am currently studying here</label></div>
+                            </fieldset>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                             <div>
-                                <label className="text-sm font-medium text-slate-600">Start Date</label>
-                                <Controller name="startDate" control={control} render={({ field }) => <input {...field} type="date" className="mt-1 w-full p-2 border border-slate-300 rounded-lg text-slate-500"/>}/>
-                            </div>
-                             <div>
-                                <label className="text-sm font-medium text-slate-600">End Date</label>
-                                {!isCurrent && (
-                                    <Controller name="endDate" control={control} render={({ field }) => <input {...field} type="date" className="mt-1 w-full p-2 border border-slate-300 rounded-lg text-slate-500"/>}/>
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                             <input 
-                                id="currentStudy"
-                                type="checkbox"
-                                checked={isCurrent}
-                                onChange={(e) => {
-                                    setValue('endDate', e.target.checked ? 'present' : formatDateForInput(new Date().toISOString()), { shouldDirty: true });
-                                }}
-                                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                            />
-                            <label htmlFor="currentStudy" className="text-sm text-slate-700">I am currently studying here</label>
-                        </div>
-                        
-                         <div className="relative">
-                            <label className="text-sm font-medium text-slate-600">Grade / CGPA</label>
-                            <FiAward className="absolute top-9 left-3 text-slate-400" />
-                            <Controller name="grade" control={control} render={({ field }) => <input {...field} placeholder="e.g., CGPA: 3.8/4.0" className="mt-1 w-full p-2 pl-10 border border-slate-300 rounded-lg"/>}/>
-                        </div>
-                        <div>
-                            <label className="text-sm font-medium text-slate-600">Description</label>
-                            <Controller name="description" control={control} render={({ field }) => <textarea {...field} rows={3} placeholder="Description of your studies and key courses..." className="mt-1 w-full p-2 border border-slate-300 rounded-lg"/>}/>
-                        </div>
-                        
-                        <Controller name="logo" control={control} render={({ field: { onChange } }) => (
-                            <FileUpload
-                                label="Institution Logo"
-                                accept="image/*"
-                                fileType="image"
-                                existingFileUrl={typeof educationToEdit?.logo === 'string' ? `${assetBaseUrl}/${educationToEdit.logo}` : null}
-                                onFileChange={onChange}
-                                onRemove={() => onChange('remove')}
-                            />
-                        )}/>
-
-                        <div className="flex justify-end gap-4 pt-4 border-t">
-                            <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-                            <Button type="submit" isLoading={mutation.isPending} disabled={!isDirty}>
-                                <FiSave className="mr-2"/>
-                                {educationToEdit ? 'Save Changes' : 'Create Education'}
-                            </Button>
+                            <fieldset className="space-y-4 pt-4 border-t text-slate-400">
+                                <legend className="text-base font-semibold text-slate-700 pr-2">Details</legend>
+                                <Controller name="grade" control={control} render={({ field }) => <div className="relative"><FiAward className="absolute top-3 left-3 text-slate-400" /><input {...field} placeholder="e.g., CGPA: 3.8/4.0" className="w-full p-2 pl-10 border rounded-lg"/></div>}/>
+                                <Controller name="description" control={control} render={({ field }) => <textarea {...field} rows={3} placeholder="Description of your studies..." className="w-full p-2 border rounded-lg"/>}/>
+                                <Controller name="logo" control={control} render={({ field: { onChange } }) => (
+                                    <FileUpload label="Institution Logo" accept="image/*" fileType="image" existingFileUrl={typeof educationToEdit?.logo === 'string' ? `${assetBaseUrl}/${educationToEdit.logo}` : null} onFileChange={onChange} onRemove={() => onChange('remove')} />
+                                )}/>
+                            </fieldset>
                         </div>
                     </form>
+                    
+                    <div className="flex-shrink-0 p-4 flex justify-end gap-4 border-t border-slate-300 bg-slate-50 rounded-b-2xl">
+                        <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
+                        <Button form="education-form" type="submit" isLoading={mutation.isPending} disabled={!isDirty}>
+                            <FiSave className="mr-2"/>
+                            {educationToEdit ? 'Save Changes' : 'Create Entry'}
+                        </Button>
+                    </div>
                 </Dialog.Panel>
             </div>
         </div>

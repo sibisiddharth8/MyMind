@@ -116,7 +116,7 @@ export default function TermsPage() {
                 </PageHeader>
             </motion.div>
 
-            {isLoading ? <div className="flex justify-center items-center h-64"><Spinner /></div> : (
+            {isLoading ? <Spinner overlay={true} text="Loading Terms & Conditions ..." /> : (
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext items={terms} strategy={verticalListSortingStrategy}>
                         <div className="space-y-4 mt-8">

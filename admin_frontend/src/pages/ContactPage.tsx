@@ -142,9 +142,7 @@ export default function ContactPage() {
                 {/* Section 2: The Scrollable Content */}
                 <div className="flex-grow overflow-y-auto mb-12">
                     {isLoading ? (
-                        <div className="flex justify-center items-center h-full">
-                            <Spinner />
-                        </div>
+                        <Spinner overlay={true} text="Loading Messages ..." />
                     ) : (
                         <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} initial="hidden" animate="visible" className="p-6">
                             {messages.length > 0 ? (

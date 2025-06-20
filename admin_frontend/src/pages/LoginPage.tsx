@@ -133,7 +133,7 @@ export default function LoginPage() {
                 <form className="mt-8 space-y-6" onSubmit={HForgot(onForgot)}>
                   <AuthInput id="forgot-email" label="Email Address" type="email" icon={<FiMail/>} register={RForgot('email', { required: true })}/>
                   <Button type="submit" isLoading={forgotMutation.isPending} className="w-full !py-3 !text-base">Send Reset Code</Button>
-                  <div className="text-center text-sm"><button type="button" onClick={() => setMode('login')} className="font-medium text-slate-500 hover:text-blue-600 flex items-center mx-auto"><FiArrowLeft className="mr-1"/>Back to Login</button></div>
+                  <div className="text-center text-sm"><button type="button" onClick={() => setMode('login')} className="font-medium text-slate-500 hover:text-blue-600 flex items-center mx-auto"><FiArrowLeft className="mr-1 cursor-pointer"/>Back to Login</button></div>
                 </form>
               </motion.div>
             )}
@@ -157,7 +157,7 @@ export default function LoginPage() {
                     <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto"><FiCheckCircle className="text-emerald-500" size={32}/></div>
                     <h2 className="text-2xl font-bold text-slate-800 mt-6">Password Reset!</h2>
                     <p className="text-slate-500 mt-2">You can now sign in with your new password.</p>
-                    <Button onClick={() => setMode('login')} className="w-full mt-8 !py-3">Back to Login</Button>
+                    <Button onClick={() => setMode('login')} className="w-full mt-8 !py-3 cursor-pointer">Back to Login</Button>
                 </motion.div>
             )}
           </AnimatePresence>

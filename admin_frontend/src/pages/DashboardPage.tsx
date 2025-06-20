@@ -19,7 +19,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full pt-16">
-        <Spinner />
+        <Spinner overlay={true} text="Loading Dashboard Details..." />
         <span className="ml-4 text-slate-500">Loading Dashboard Data...</span>
       </div>
     );

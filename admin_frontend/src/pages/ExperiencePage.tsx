@@ -68,19 +68,19 @@ export default function ExperiencePage() {
     return (
         <>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                <PageHeader title="Work Experience">
+                <div className='flex items-center justify-between'>
+                    <PageHeader title="Work Experience"></PageHeader>
                     <Button onClick={() => handleOpenModal()}>
                         <div className='flex items-center gap-2'>
-                            <FiPlus className="" />
-                            <span className="">Add Experience</span>
+                            <FiPlus className="my-1" />
+                            <span className="hidden sm:block">Add Experience</span>
                         </div>
-                        
                     </Button>
-                </PageHeader>
+                </div>
             </motion.div>
 
             {isLoading ? (
-                <div className="flex justify-center items-center h-64"><Spinner /></div>
+                <Spinner overlay={true} text="Loading Experience Details..." />
             ) : (
                 <motion.div 
                     className="space-y-6 mt-2"

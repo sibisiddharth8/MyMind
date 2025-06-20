@@ -23,7 +23,6 @@ export const createMessage = (
   });
 };
 
-// This function now correctly handles date filters and searches by email.
 export const getAllMessages = async ({ page = 1, limit = 10, email, status, searchQuery, dateFilter }: {
     page: number,
     limit: number,
@@ -36,7 +35,6 @@ export const getAllMessages = async ({ page = 1, limit = 10, email, status, sear
 
     if (dateFilter) {
         let gte: Date | undefined;
-        const now = new Date();
         switch (dateFilter) {
             case 'today':
                 gte = new Date();
@@ -50,10 +48,12 @@ export const getAllMessages = async ({ page = 1, limit = 10, email, status, sear
             case 'last7days':
                 gte = new Date();
                 gte.setDate(gte.getDate() - 7);
+                gte.setHours(0, 0, 0, 0);
                 break;
             case 'last30days':
                 gte = new Date();
                 gte.setDate(gte.getDate() - 30);
+                gte.setHours(0, 0, 0, 0);
                 break;
         }
         if (gte) {
@@ -61,16 +61,12 @@ export const getAllMessages = async ({ page = 1, limit = 10, email, status, sear
         }
     }
     
-    if (email) {
-        where.email = { contains: email, mode: 'insensitive' };
-    }
-    if (status) {
-        where.status = status;
-    }
+    if (email) { where.email = { contains: email, mode: 'insensitive' }; }
+    if (status) { where.status = status; }
     if (searchQuery) {
         where.OR = [
             { name: { contains: searchQuery, mode: 'insensitive' } },
-            { email: { contains: searchQuery, mode: 'insensitive' } }, // Now searches by email
+            { email: { contains: searchQuery, mode: 'insensitive' } },
             { subject: { contains: searchQuery, mode: 'insensitive' } },
             { message: { contains: searchQuery, mode: 'insensitive' } }
         ];
@@ -84,12 +80,8 @@ export const getAllMessages = async ({ page = 1, limit = 10, email, status, sear
         orderBy: { createdAt: 'desc' },
     });
 
-    return {
-        data: messages,
-        pagination: { total, totalPages: Math.ceil(total / limit), currentPage: page, limit },
-    };
+    return { data: messages, pagination: { total, totalPages: Math.ceil(total / limit), currentPage: page, limit } };
 };
-
 // Get a single message and automatically mark it as READ
 export const getMessageById = async (id: string) => {
   const message = await prisma.contactMessage.findUnique({ where: { id } });
