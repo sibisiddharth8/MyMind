@@ -85,10 +85,16 @@ export const updateCategoryController = async (req: Request, res: Response): Pro
 export const deleteCategoryController = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const category = await skillsService.getAllCategoriesWithSkills().then(cats => cats.find(c => c.id === id));
+        // First, get the category and its associated skills to find the image paths
+        const category = await skillsService.getCategoryById(id);
+
         // Delete all images associated with the skills in this category
-        category?.skills.forEach(skill => deleteFile(skill.image));
+        // FIX: We explicitly tell TypeScript the shape of the 'skill' object.
+        category?.skills.forEach((skill: { image: string }) => deleteFile(skill.image));
+        
+        // Then, delete the category itself (which also deletes the skills via cascading delete)
         await skillsService.deleteCategory(id);
+        
         res.status(204).send();
     } catch (error) {
         res.status(500).json({ message: 'Error deleting category', error });

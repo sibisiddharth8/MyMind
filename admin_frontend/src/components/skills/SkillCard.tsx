@@ -15,7 +15,6 @@ interface SkillCardProps {
 }
 
 export default function SkillCard({ skill, onEdit, onDelete }: SkillCardProps) {
-    const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
     // Animation variant for framer-motion
     const itemVariants = {
@@ -51,7 +50,7 @@ export default function SkillCard({ skill, onEdit, onDelete }: SkillCardProps) {
                 {/* Skill Icon with hover scale effect */}
                 <div className="w-16 h-16 mb-4 transition-transform duration-300 group-hover:scale-110">
                     <img 
-                        src={`${assetBaseUrl}/${skill.image}`} 
+                        src={skill.image} 
                         alt={skill.name} 
                         className="w-full h-full object-contain"
                     />

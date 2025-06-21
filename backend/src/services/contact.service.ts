@@ -3,24 +3,34 @@ import nodemailer from 'nodemailer';
 
 const prisma = new PrismaClient();
 
+const transformMessagePaths = (message: any) => {
+    if (!message) return null;
+    const baseUrl = process.env.BACKEND_URL;
+
+    // Check for the nested user profile image
+    if (message.publicUser?.profileImage && !message.publicUser.profileImage.startsWith('http')) {
+        message.publicUser.profileImage = `${baseUrl}/${message.publicUser.profileImage}`;
+    }
+    return message;
+};
+
 // This function now correctly requires a 'user' object to link the message.
-export const createMessage = (
+export const createMessage = async (
     data: { subject: string, message: string }, 
     user: { userId: string, name: string, email: string }
 ) => {
-  return prisma.contactMessage.create({ 
+  const newMessage = await prisma.contactMessage.create({ 
       data: {
           subject: data.subject,
           message: data.message,
           name: user.name,
           email: user.email,
-          publicUser: {
-              connect: {
-                  id: user.userId
-              }
-          }
-      } 
+          publicUser: { connect: { id: user.userId } }
+      },
+      include: { publicUser: true } // Include user data in the response
   });
+  // FIX: Transform path before returning
+  return transformMessagePaths(newMessage);
 };
 
 export const getAllMessages = async ({ page = 1, limit = 10, email, status, searchQuery, dateFilter }: {
@@ -78,17 +88,30 @@ export const getAllMessages = async ({ page = 1, limit = 10, email, status, sear
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { createdAt: 'desc' },
+        include: { publicUser: true }
     });
 
-    return { data: messages, pagination: { total, totalPages: Math.ceil(total / limit), currentPage: page, limit } };
+    return {
+        // FIX: Transform paths for every message in the list
+        data: messages.map(transformMessagePaths),
+        pagination: { total, totalPages: Math.ceil(total / limit), currentPage: page, limit },
+    };
 };
-// Get a single message and automatically mark it as READ
 export const getMessageById = async (id: string) => {
-  const message = await prisma.contactMessage.findUnique({ where: { id } });
+  const message = await prisma.contactMessage.findUnique({ 
+    where: { id },
+    include: { publicUser: true } // FIX: Include user data
+  });
+
   if (message && message.status === 'UNREAD') {
-    return prisma.contactMessage.update({ where: { id }, data: { status: 'READ' } });
+    const updatedMessage = await prisma.contactMessage.update({ 
+        where: { id }, 
+        data: { status: 'READ' },
+        include: { publicUser: true }
+    });
+    return transformMessagePaths(updatedMessage);
   }
-  return message;
+  return transformMessagePaths(message);
 };
 
 // Get message statistics
@@ -108,8 +131,13 @@ export const getMessageStats = async () => {
 };
 
 // Manually update a message's status
-export const updateMessageStatus = (id: string, status: MessageStatus) => {
-    return prisma.contactMessage.update({ where: { id }, data: { status } });
+export const updateMessageStatus = async (id: string, status: MessageStatus) => {
+    const updatedMessage = await prisma.contactMessage.update({ 
+        where: { id }, 
+        data: { status },
+        include: { publicUser: true } // FIX: Include user data
+    });
+    return transformMessagePaths(updatedMessage);
 };
 
 // Delete a message

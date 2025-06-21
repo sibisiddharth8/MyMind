@@ -66,7 +66,7 @@ export default function MembersPage() {
         <>
             <div className="flex flex-col h-full">
                 {/* Section 1: Page Header (Sticky) */}
-                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="sticky top-0 z-10 bg-slate-50 py-4 -mx-6 px-6">
+                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex-shrink-0 sticky top-0 bg-slate-50 z-10 py-2 px-6 border-b border-slate-200">
                     <PageHeader title="Team Members">
                         <div className="flex flex-row items-center gap-2">
                             <div className="relative w-full sm:w-auto">

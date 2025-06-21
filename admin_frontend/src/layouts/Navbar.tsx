@@ -9,11 +9,10 @@ interface NavbarProps { onMenuClick: () => void; }
 // The UserAvatar component is now simpler and more robust
 const UserAvatar = () => {
     const { user } = useAuth();
-    const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
     // Display image if available
     if (user?.image) {
-        return <img src={`${assetBaseUrl}/${user.image}`} alt="Profile" className="w-9 h-9 rounded-full object-cover" />;
+        return <img src={user.image} alt="Profile" className="w-9 h-9 rounded-full object-cover" />;
     }
     // Otherwise, display initial if name is available
     if (user?.name) {

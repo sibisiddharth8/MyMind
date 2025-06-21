@@ -44,13 +44,13 @@ export default function DashboardPage() {
   
   return (
     <div>
-      <motion.div initial="hidden" animate="visible" variants={itemVariants}>
+      <motion.div initial="hidden" animate="visible" variants={itemVariants} className='flex-shrink-0 sticky top-0 bg-slate-50 z-10 py-2 border-b border-slate-200'>
         <PageHeader title="Dashboard" />
       </motion.div>
 
       {/* Stat Cards Grid */}
       <motion.div 
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

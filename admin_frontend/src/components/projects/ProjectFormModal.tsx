@@ -34,7 +34,6 @@ const formatDateForInput = (dateString?: string | null): string => {
 export default function ProjectFormModal({ isOpen, onClose, projectToEdit }: ProjectFormModalProps) {
     const queryClient = useQueryClient();
     const [newCategoryName, setNewCategoryName] = useState("");
-    const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
     const { data: categoriesResponse, isLoading: isLoadingCategories } = useQuery({ queryKey: ['projectCategories'], queryFn: getProjectCategories });
     const { data: membersResponse, isLoading: isLoadingMembers } = useQuery({ queryKey: ['allMembersSimple'], queryFn: getAllMembersSimple });
@@ -157,7 +156,7 @@ export default function ProjectFormModal({ isOpen, onClose, projectToEdit }: Pro
                                         <legend className="text-base font-semibold text-slate-700 pr-2">Project Assets</legend>
                                         <Controller name="description" control={control} render={({field}) => <textarea {...field} rows={4} placeholder="Project description..." className="w-full p-2 border border-slate-300 rounded-lg"/>}/>
                                         <Controller name="tags" control={control} render={({field}) => <div className="relative"><FiTag className="absolute top-3 left-3 text-slate-400" /><input {...field} placeholder="Tags (comma-separated, max 5)" className="w-full p-2 pl-10 border border-slate-300 rounded-lg"/></div>} />
-                                        <Controller name="projectImage" control={control} rules={{required: !projectToEdit}} render={({field: { onChange }}) => (<FileUpload label="Project Image" accept="image/*" fileType="image" existingFileUrl={projectToEdit?.projectImage ? `${assetBaseUrl}/${projectToEdit.projectImage}` : null} onFileChange={onChange} onRemove={() => onChange('remove')} />)} />
+                                        <Controller name="projectImage" control={control} rules={{required: !projectToEdit}} render={({field: { onChange }}) => (<FileUpload label="Project Image" accept="image/*" fileType="image" existingFileUrl={projectToEdit?.projectImage ? projectToEdit.projectImage : null} onFileChange={onChange} onRemove={() => onChange('remove')} />)} />
                                     </fieldset>
                                     
                                     <fieldset className="p-4 border border-slate-300 rounded-lg bg-slate-50">

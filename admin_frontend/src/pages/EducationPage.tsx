@@ -35,7 +35,6 @@ export default function EducationPage() {
         queryFn: getEducations
     });
     const educations = educationResponse?.data || [];
-    const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
     const deleteMutation = useMutation({
         mutationFn: deleteEducation,
@@ -65,7 +64,7 @@ export default function EducationPage() {
 
     return (
         <>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className='flex-shrink-0 sticky top-0 bg-slate-50 z-10 py-2 border-b border-slate-200'>
                 <div className='flex items-center justify-between'>
                     <PageHeader title="Education History"></PageHeader>
                     <Button onClick={() => handleOpenModal()}>
@@ -86,7 +85,7 @@ export default function EducationPage() {
                 >
                     {educations.length > 0 ? educations.map((edu: Education) => (
                         <div key={edu.id} className="bg-white p-5 rounded-xl shadow-md flex items-start gap-5">
-                            <img src={`${assetBaseUrl}/${edu.logo}`} alt={`${edu.institutionName} logo`} className="w-14 h-14 object-contain rounded-md border border-slate-100 p-1"/>
+                            <img src={edu.logo} alt={`${edu.institutionName} logo`} className="w-14 h-14 object-contain rounded-md border border-slate-100 p-1"/>
                             <div className="flex-1">
                                 <h3 className="font-bold text-lg text-slate-800">{edu.courseName}</h3>
                                 <p className="text-md font-medium text-slate-600">{edu.institutionName}</p>

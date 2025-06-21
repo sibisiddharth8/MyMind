@@ -45,7 +45,6 @@ const formatDateForInput = (dateString?: string | null): string => {
 export default function EducationFormModal({ isOpen, onClose, educationToEdit }: EducationFormModalProps) {
   const queryClient = useQueryClient();
   const { control, handleSubmit, reset, watch, setValue, formState: { isDirty } } = useForm<EducationFormData>();
-  const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
   const endDateValue = watch('endDate');
   const isCurrent = endDateValue === 'present' || endDateValue === null;
@@ -130,7 +129,7 @@ export default function EducationFormModal({ isOpen, onClose, educationToEdit }:
                                 <Controller name="grade" control={control} render={({ field }) => <div className="relative"><FiAward className="absolute top-3 left-3 text-slate-400" /><input {...field} placeholder="e.g., CGPA: 3.8/4.0" className="w-full p-2 pl-10 border rounded-lg"/></div>}/>
                                 <Controller name="description" control={control} render={({ field }) => <textarea {...field} rows={3} placeholder="Description of your studies..." className="w-full p-2 border rounded-lg"/>}/>
                                 <Controller name="logo" control={control} render={({ field: { onChange } }) => (
-                                    <FileUpload label="Institution Logo" accept="image/*" fileType="image" existingFileUrl={typeof educationToEdit?.logo === 'string' ? `${assetBaseUrl}/${educationToEdit.logo}` : null} onFileChange={onChange} onRemove={() => onChange('remove')} />
+                                    <FileUpload label="Institution Logo" accept="image/*" fileType="image" existingFileUrl={typeof educationToEdit?.logo === 'string' ? educationToEdit.logo : null} onFileChange={onChange} onRemove={() => onChange('remove')} />
                                 )}/>
                             </fieldset>
                         </div>

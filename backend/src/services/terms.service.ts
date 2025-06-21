@@ -1,29 +1,42 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, TermAndCondition } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export type TermData = Partial<Omit<Prisma.TermAndConditionCreateInput, 'id' | 'createdAt' | 'updatedAt'>>;
 
+const toAbsolutePaths = (term: TermAndCondition | null): TermAndCondition | null => {
+    if (!term) return null;
+    
+    if (term.imagePath && !term.imagePath.startsWith('http')) {
+        term.imagePath = `${process.env.BACKEND_URL}/${term.imagePath}`;
+    }
+    return term;
+};
+
 export const createTerm = async (data: TermData) => {
-  // Automatically assign the next order number
   const maxOrderTerm = await prisma.termAndCondition.findFirst({ orderBy: { order: 'desc' } });
   const newOrder = maxOrderTerm ? maxOrderTerm.order + 1 : 1;
-  return prisma.termAndCondition.create({
+  
+  const newTerm = await prisma.termAndCondition.create({
     data: { ...data, order: newOrder } as any,
   });
+  return toAbsolutePaths(newTerm);
 };
 
-export const getAllTerms = () => {
-  return prisma.termAndCondition.findMany({
-    orderBy: { order: 'asc' }, // Return terms in their custom order
+export const getAllTerms = async () => {
+  const terms = await prisma.termAndCondition.findMany({
+    orderBy: { order: 'asc' },
   });
+  return terms.map(toAbsolutePaths);
 };
 
-export const getTermById = (id: string) => {
-  return prisma.termAndCondition.findUnique({ where: { id } });
+export const getTermById = async (id: string) => {
+  const term = await prisma.termAndCondition.findUnique({ where: { id } });
+  return toAbsolutePaths(term);
 };
 
-export const updateTerm = (id: string, data: TermData) => {
-  return prisma.termAndCondition.update({ where: { id }, data });
+export const updateTerm = async (id: string, data: TermData) => {
+  const updatedTerm = await prisma.termAndCondition.update({ where: { id }, data });
+  return toAbsolutePaths(updatedTerm);
 };
 
 // A dedicated service for reordering multiple terms at once
@@ -34,10 +47,10 @@ export const updateTermOrder = async (termOrders: { id: string, order: number }[
       data: { order: term.order },
     })
   );
-  // Use a transaction to ensure all updates succeed or fail together
-  return prisma.$transaction(updates);
+  
+  const results = await prisma.$transaction(updates);
+  return results.map(toAbsolutePaths);
 };
-
 export const deleteTerm = (id: string) => {
   return prisma.termAndCondition.delete({ where: { id } });
 };

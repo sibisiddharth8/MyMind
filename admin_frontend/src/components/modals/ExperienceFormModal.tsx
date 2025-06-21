@@ -46,7 +46,6 @@ const formatDateForInput = (dateString?: string | null): string => {
 export default function ExperienceFormModal({ isOpen, onClose, experienceToEdit }: ExperienceFormModalProps) {
   const queryClient = useQueryClient();
   const { control, handleSubmit, reset, watch, setValue, formState: { isDirty } } = useForm<ExperienceFormData>();
-  const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
   const endDateValue = watch('endDate');
   const isCurrentJob = endDateValue === 'present' || endDateValue === null;
@@ -133,7 +132,7 @@ export default function ExperienceFormModal({ isOpen, onClose, experienceToEdit 
                                 <Controller name="description" control={control} render={({ field }) => <div><label className="text-sm font-medium text-slate-600">Description</label><textarea {...field} rows={4} placeholder="Your role and achievements..." className="mt-1 w-full p-2 border rounded-lg"/></div>}/>
                                 <Controller name="skills" control={control} render={({ field }) => <div><label className="text-sm font-medium text-slate-600">Skills Used (comma-separated)</label><div className="relative mt-1"><FiTag className="absolute top-3 left-3 text-slate-400" /><input {...field} placeholder="e.g., React, Node.js, Python" className="w-full p-2 pl-10 border rounded-lg"/></div></div>}/>
                                 <Controller name="logo" control={control} render={({ field: { onChange } }) => (
-                                    <FileUpload label="Company Logo" accept="image/*" fileType="image" existingFileUrl={typeof experienceToEdit?.logo === 'string' ? `${assetBaseUrl}/${experienceToEdit.logo}` : null} onFileChange={onChange} onRemove={() => onChange('remove')} />
+                                    <FileUpload label="Company Logo" accept="image/*" fileType="image" existingFileUrl={typeof experienceToEdit?.logo === 'string' ? experienceToEdit.logo : null} onFileChange={onChange} onRemove={() => onChange('remove')} />
                                 )}/>
                             </fieldset>
                         </div>

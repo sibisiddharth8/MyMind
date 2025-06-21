@@ -17,7 +17,6 @@ interface MemberCardProps {
 }
 
 export default function MemberCard({ member, onEdit, onDelete }: MemberCardProps) {
-    const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
         visible: { y: 0, opacity: 1 }
@@ -42,7 +41,7 @@ export default function MemberCard({ member, onEdit, onDelete }: MemberCardProps
             <div className="mb-4">
                 {member.profileImage ? (
                     <img 
-                        src={`${assetBaseUrl}/${member.profileImage}`} 
+                        src={member.profileImage} 
                         alt={member.name} 
                         className="w-24 h-24 rounded-full object-cover mx-auto shadow-md"
                     />

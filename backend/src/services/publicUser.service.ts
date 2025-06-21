@@ -6,39 +6,39 @@ import nodemailer from 'nodemailer';
 
 const prisma = new PrismaClient();
 
-export const registerPublicUser = async (data: { name: string, email: string, pass: string }) => {
-    const existingUser = await prisma.publicUser.findUnique({ where: { email: data.email } });
-    if (existingUser) throw new Error("An account with this email already exists.");
+// export const registerPublicUser = async (data: { name: string, email: string, pass: string }) => {
+//     const existingUser = await prisma.publicUser.findUnique({ where: { email: data.email } });
+//     if (existingUser) throw new Error("An account with this email already exists.");
     
-    const hashedPassword = await bcrypt.hash(data.pass, 12);
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = new Date(Date.now() + 600000); 
+//     const hashedPassword = await bcrypt.hash(data.pass, 12);
+//     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+//     const otpExpiry = new Date(Date.now() + 600000); 
 
-    const newUser = await prisma.publicUser.create({
-        data: {
-            name: data.name,
-            email: data.email,
-            password: hashedPassword,
-            verificationOtp: otp,
-            otpExpiry: otpExpiry,
-            isVerified: false,
-        }
-    });
+//     const newUser = await prisma.publicUser.create({
+//         data: {
+//             name: data.name,
+//             email: data.email,
+//             password: hashedPassword,
+//             verificationOtp: otp,
+//             otpExpiry: otpExpiry,
+//             isVerified: false,
+//         }
+//     });
 
-    const transport = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST, port: Number(process.env.EMAIL_PORT),
-        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    });
-    const mailOptions = {
-        to: newUser.email,
-        from: `Your Portfolio <${process.env.EMAIL_USER}>`,
-        subject: 'Verify Your Email Address',
-        html: `<p>Welcome! Your verification code is: <b>${otp}</b>. It will expire in 10 minutes.</p>`
-    };
-    await transport.sendMail(mailOptions);
+//     const transport = nodemailer.createTransport({
+//         host: process.env.EMAIL_HOST, port: Number(process.env.EMAIL_PORT),
+//         auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
+//     });
+//     const mailOptions = {
+//         to: newUser.email,
+//         from: `Your Portfolio <${process.env.EMAIL_USER}>`,
+//         subject: 'Verify Your Email Address',
+//         html: `<p>Welcome! Your verification code is: <b>${otp}</b>. It will expire in 10 minutes.</p>`
+//     };
+//     await transport.sendMail(mailOptions);
 
-    return { message: "Verification OTP sent to your email." };
-};
+//     return { message: "Verification OTP sent to your email." };
+// };
 
 // --- THIS IS THE NEW REGISTRATION STEP 1 ---
 export const initiateRegistration = async (data: { name: string, email: string, pass: string }) => {

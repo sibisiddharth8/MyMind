@@ -24,7 +24,6 @@ interface TermFormModalProps {
 export default function TermFormModal({ isOpen, onClose, termToEdit }: TermFormModalProps) {
   const queryClient = useQueryClient();
   const { control, handleSubmit, reset, formState: { isDirty } } = useForm<TermFormData>();
-  const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
   useEffect(() => {
     if (termToEdit) {
@@ -80,7 +79,7 @@ export default function TermFormModal({ isOpen, onClose, termToEdit }: TermFormM
                             label="Optional Image"
                             accept="image/*"
                             fileType="image"
-                            existingFileUrl={termToEdit?.imagePath ? `${assetBaseUrl}/${termToEdit.imagePath}` : null}
+                            existingFileUrl={termToEdit?.imagePath ? termToEdit.imagePath : null}
                             onFileChange={onChange}
                             onRemove={() => onChange('remove')}
                         />

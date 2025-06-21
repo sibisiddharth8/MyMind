@@ -23,7 +23,6 @@ interface SkillFormModalProps {
 export default function SkillFormModal({ isOpen, onClose, categoryId, skillToEdit }: SkillFormModalProps) {
     const queryClient = useQueryClient();
     const { control, handleSubmit, reset, formState: { isDirty, errors } } = useForm<SkillFormData>();
-    const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
     useEffect(() => {
         if (isOpen) {
@@ -110,7 +109,7 @@ export default function SkillFormModal({ isOpen, onClose, categoryId, skillToEdi
                                                     label="Skill Icon"
                                                     accept="image/*"
                                                     fileType="image"
-                                                    existingFileUrl={typeof skillToEdit?.image === 'string' ? `${assetBaseUrl}/${skillToEdit.image}` : null}
+                                                    existingFileUrl={typeof skillToEdit?.image === 'string' ? skillToEdit.image : null}
                                                     onFileChange={onChange}
                                                     onRemove={() => onChange('remove')}
                                                 />

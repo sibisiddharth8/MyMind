@@ -80,7 +80,7 @@ export default function LinksPage() {
   return (
     <>
       <div className="pb-18">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className='flex-shrink-0 sticky top-0 bg-slate-50 z-10 py-2 border-b border-slate-200'>
           <PageHeader title="Social Links" />
         </motion.div>
         

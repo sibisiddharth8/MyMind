@@ -3,48 +3,50 @@ const prisma = new PrismaClient();
 
 export type ExperienceData = Partial<Omit<Experience, 'id' | 'createdAt' | 'updatedAt'>>;
 
-export const createExperience = (data: ExperienceData) => {
-  return prisma.experience.create({ data: data as Experience });
+const toAbsolutePaths = (experience: Experience | null): Experience | null => {
+    if (!experience) return null;
+    
+    // Prepend base URL only if it's a relative path
+    if (experience.logo && !experience.logo.startsWith('http')) {
+        experience.logo = `${process.env.BACKEND_URL}/${experience.logo}`;
+    }
+    return experience;
+};
+
+export const createExperience = async (data: ExperienceData) => {
+  const newExperience = await prisma.experience.create({ data: data as Experience });
+  return toAbsolutePaths(newExperience);
 };
 
 export const getAllExperiences = async () => {
-  // 1. Fetch all experiences without complex sorting from the database
   const experiences = await prisma.experience.findMany({});
 
-  // 2. Sort the results in our application code using JavaScript's .sort() method
-  return experiences.sort((a, b) => {
+  const sorted = experiences.sort((a, b) => {
     const aIsPresent = a.endDate === null;
     const bIsPresent = b.endDate === null;
-
-    // Rule: "Present" jobs come before finished jobs
-    if (aIsPresent && !bIsPresent) {
-      return -1; // a comes first
-    }
-    if (!aIsPresent && bIsPresent) {
-      return 1; // b comes first
-    }
-
-    // Rule: If both jobs are "Present", sort by newest start date
+    if (aIsPresent && !bIsPresent) return -1;
+    if (!aIsPresent && bIsPresent) return 1;
     if (aIsPresent && bIsPresent) {
       return b.startDate.getTime() - a.startDate.getTime();
     }
-    
-    // Rule: If both jobs are finished, sort by newest end date
-    // We can be sure endDate is not null here, but we check to satisfy TypeScript
     if (a.endDate && b.endDate) {
       return b.endDate.getTime() - a.endDate.getTime();
     }
-    
-    return 0; // Should not be reached
+    return 0;
   });
+  
+  // Map over the array to transform each item
+  return sorted.map(toAbsolutePaths);
 };
 
-export const getExperienceById = (id: string) => {
-  return prisma.experience.findUnique({ where: { id } });
+export const getExperienceById = async (id: string) => {
+  const experience = await prisma.experience.findUnique({ where: { id } });
+  return toAbsolutePaths(experience);
 };
 
-export const updateExperience = (id: string, data: ExperienceData) => {
-  return prisma.experience.update({ where: { id }, data });
+export const updateExperience = async (id: string, data: ExperienceData) => {
+  const updatedExperience = await prisma.experience.update({ where: { id }, data });
+  return toAbsolutePaths(updatedExperience);
 };
 
 export const deleteExperience = (id: string) => {

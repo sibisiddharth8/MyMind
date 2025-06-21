@@ -29,7 +29,6 @@ interface MemberFormModalProps {
 export default function MemberFormModal({ isOpen, onClose, memberToEdit }: MemberFormModalProps) {
   const queryClient = useQueryClient();
   const { control, handleSubmit, reset, formState: { isDirty } } = useForm<MemberFormData>();
-  const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
   useEffect(() => {
     if (isOpen) {
@@ -93,7 +92,7 @@ export default function MemberFormModal({ isOpen, onClose, memberToEdit }: Membe
                                 label="Profile Image"
                                 accept="image/*"
                                 fileType="image"
-                                existingFileUrl={typeof memberToEdit?.profileImage === 'string' ? `${assetBaseUrl}/${memberToEdit.profileImage}` : null}
+                                existingFileUrl={typeof memberToEdit?.profileImage === 'string' ? memberToEdit.profileImage : null}
                                 onFileChange={onChange}
                                 onRemove={() => onChange('remove')}
                             />

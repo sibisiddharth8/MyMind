@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="698.53" height="771.82"><svg id="SvgjsSvg1004" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 698.53 771.82">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        font-family: NirmalaUI-Bold, 'Nirmala UI';
+        font-size: 84.92px;
+        font-weight: 700;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #1e2939;
+      }
+
+      .cls-4 {
+        fill: #ff6900;
+      }
+
+      .cls-5 {
+        fill: #fefefe;
+      }
+    </style>
+  </defs>
+  <g id="SvgjsG1003" data-name="Layer 1">
+    <path class="cls-4" d="m0,237.09v297.66c0,31.39,16.82,60.38,44.08,75.96l261.78,149.6c26.9,15.37,59.92,15.37,86.81,0l261.78-149.6c27.26-15.58,44.08-44.56,44.08-75.96V237.08c0-31.39-16.82-60.38-44.08-75.96L392.67,11.53c-26.9-15.37-59.92-15.37-86.81,0L44.08,161.13C16.82,176.71,0,205.69,0,237.09Z"></path>
+    <path class="cls-5" d="m62.13,263.56v244.7c0,25.81,13.83,49.64,36.24,62.44l215.21,122.99c22.11,12.64,49.26,12.64,71.37,0l215.21-122.99c22.41-12.81,36.24-36.64,36.24-62.44v-244.7c0-25.81-13.83-49.64-36.24-62.44l-215.21-122.99c-22.11-12.64-49.26-12.64-71.37,0l-215.21,122.99c-22.41,12.81-36.24,36.64-36.24,62.44Z"></path>
+    <polygon class="cls-3" points="361.97 364.38 351.2 383.03 339.46 362.7 349.26 357.04 361.97 364.38"></polygon>
+    <polygon class="cls-3" points="324.26 392.91 345.5 392.91 336.97 407.68 324.26 400.34 324.26 392.91"></polygon>
+    <polygon class="cls-3" points="351.2 383.03 356.9 392.91 345.5 392.91 351.2 383.03"></polygon>
+    <polygon class="cls-3" points="374.26 392.91 374.26 400.34 364.46 406 356.9 392.91 374.26 392.91"></polygon>
+    <g>
+      <path class="cls-3" d="m540.66,242.94l-191.39,110.49-191.39-110.49,163.89-93.65c17.04-9.74,37.97-9.74,55.01,0l163.89,93.65Z"></path>
+      <path class="cls-3" d="m127.92,291.9l192.66,111.22v220.04l-164.74-94.14c-17.27-9.87-27.93-28.24-27.93-48.14v-188.64c0-.11,0-.23.01-.34Z"></path>
+      <path class="cls-3" d="m570.62,292.24v188.64c0,19.9-10.66,38.27-27.93,48.14l-164.74,94.14v-220.04l192.66-111.22c.01.11.01.23.01.34Z"></path>
+      <circle class="cls-5" cx="349.26" cy="386.56" r="119.35"></circle>
+      <g>
+        <g>
+          <circle class="cls-4" cx="349.26" cy="386.56" r="90.37"></circle>
+          <rect class="cls-4" x="337.79" y="451.97" width="22.95" height="177.88" rx="11.48" ry="11.48"></rect>
+        </g>
+        <circle class="cls-1" cx="349.26" cy="386.56" r="68.85"></circle>
+      </g>
+      <text class="cls-2" transform="translate(310.74 407.25)" svgjs:data="{&quot;leading&quot;:&quot;1.3&quot;}"><tspan x="0" y="0">த</tspan></text>
+    </g>
+  </g>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>

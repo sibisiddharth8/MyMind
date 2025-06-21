@@ -32,7 +32,6 @@ export default function AboutPage() {
     retry: false,
   });
   const aboutData = aboutDataResponse?.data;
-  const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
   const { control, handleSubmit, reset, formState: { isDirty } } = useForm<AboutFormData>({
     defaultValues: { name: '', roles: '', description: '', image: null, cv: null }
@@ -92,7 +91,7 @@ export default function AboutPage() {
     <>
       {/* Add padding-bottom to the main content wrapper to make space for the fixed footer */}
       <div className="pb-18">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className='flex-shrink-0 sticky top-0 bg-slate-50 z-10 py-2 border-b border-slate-200'>
           <PageHeader title="About Section" />
         </motion.div>
         
@@ -105,7 +104,7 @@ export default function AboutPage() {
         >
           {/* NEW LAYOUT: Assets are now first */}
           <fieldset className="mb-8">
-            <legend className="text-xl font-semibold text-slate-800 pb-4">Your Details</legend>
+            <legend className="text-xl font-semibold text-slate-800 py-2">Your Details</legend>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <Controller
                 name="image"
@@ -115,7 +114,7 @@ export default function AboutPage() {
                     label="Profile Image"
                     accept="image/*"
                     fileType="image"
-                    existingFileUrl={aboutData?.image ? `${assetBaseUrl}/${aboutData.image}` : null}
+                    existingFileUrl={aboutData?.image ? aboutData.image : null}
                     onFileChange={(file) => field.onChange(file)}
                     onRemove={() => field.onChange('remove')} // Set value to 'remove' to signal deletion
                   />
@@ -129,7 +128,7 @@ export default function AboutPage() {
                     label="CV / Resume"
                     accept=".pdf"
                     fileType="pdf"
-                    existingFileUrl={aboutData?.cv ? `${assetBaseUrl}/${aboutData.cv}` : null}
+                    existingFileUrl={aboutData?.cv ? aboutData.cv : null}
                     onFileChange={(file) => field.onChange(file)}
                     onRemove={() => field.onChange('remove')} // Set value to 'remove' to signal deletion
                   />

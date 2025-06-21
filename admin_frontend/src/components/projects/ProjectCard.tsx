@@ -38,7 +38,6 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
-    const assetBaseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
         visible: { y: 0, opacity: 1 }
@@ -56,7 +55,7 @@ export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardPr
         >
             <div className="flex items-start gap-4 p-4">
                 <img 
-                    src={`${assetBaseUrl}/${project.projectImage}`} 
+                    src={project.projectImage} 
                     alt={project.name} 
                     className="w-20 h-20 rounded-lg object-cover flex-shrink-0" 
                 />
@@ -80,16 +79,16 @@ export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardPr
             
             <div className="flex-grow"></div> 
             
-            <div className="mt-auto pt-3 pb-4 px-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="mt-auto pt-3 pb-4 px-2 border-t border-slate-100 flex sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex items-center">
                     {project.members && project.members.length > 0 && (
                         <div className="flex -space-x-2">
                             {/* --- THIS IS THE CORRECTED LOOP --- */}
-                            {project.members.slice(0, 5).map((projectMember) => (
+                            {project.members.slice(0, 4).map((projectMember) => (
                                 projectMember.member.profileImage ? (
                                     <img 
                                         key={projectMember.id} // FIX: Use the unique ID of the ProjectMember entry
-                                        src={`${assetBaseUrl}/${projectMember.member.profileImage}`} 
+                                        src={projectMember.member.profileImage} 
                                         alt={projectMember.member.name} 
                                         title={projectMember.member.name} 
                                         className="w-8 h-8 rounded-full object-cover border-2 border-white"
@@ -113,12 +112,12 @@ export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardPr
                     )}
                 </div>
                 
-                <div className="flex items-center gap-1 self-start sm:self-center">
-                    {project.githubLink && <a href={project.githubLink} target="_blank" rel="noopener noreferrer" className="p-2 text-slate-500 hover:text-slate-900 transition-colors" title="GitHub"><FaGithub size={18}/></a>}
-                    {project.liveLink && <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="p-2 text-slate-500 hover:text-blue-600 transition-colors" title="Live Demo"><FiExternalLink size={18}/></a>}
+                <div className="flex ml-auto items-center self-start sm:self-center">
+                    {project.githubLink && <a href={project.githubLink} target="_blank" rel="noopener noreferrer" className="sm:p-1 p-2 text-slate-500 hover:text-slate-900 transition-colors" title="GitHub"><FaGithub size={18}/></a>}
+                    {project.liveLink && <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="sm:p-1 p-2 text-slate-500 hover:text-blue-600 transition-colors" title="Live Demo"><FiExternalLink size={18}/></a>}
                     <div className="w-px h-5 bg-slate-200 mx-1"></div>
-                    <button onClick={onEdit} className="p-2 text-slate-500 hover:text-blue-600 transition-colors" title="Edit"><FiEdit size={16}/></button>
-                    <button onClick={onDelete} className="p-2 text-slate-500 hover:text-red-600 transition-colors" title="Delete"><FiTrash2 size={16}/></button>
+                    <button onClick={onEdit} className="sm:p-1 p-2 text-slate-500 hover:text-blue-600 transition-colors" title="Edit"><FiEdit size={16}/></button>
+                    <button onClick={onDelete} className="sm:p-1 p-2 text-slate-500 hover:text-red-600 transition-colors" title="Delete"><FiTrash2 size={16}/></button>
                 </div>
             </div>
         </motion.div>

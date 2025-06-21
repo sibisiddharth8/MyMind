@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiPlus, FiSearch } from 'react-icons/fi';
+import { TbCategoryPlus } from "react-icons/tb";
 import toast from 'react-hot-toast';
 
 import PageHeader from '../components/ui/PageHeader';
@@ -64,27 +65,52 @@ export default function ProjectsPage() {
     return (
         <>
             <div className="flex flex-col h-full">
-                {/* Section 1: The Sticky Header */}
-                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex-shrink-0 sticky top-0 bg-slate-50 z-10 py-1 px-6 border-b border-slate-200">
+                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex-shrink-0 sticky top-0 bg-slate-50 z-10 py-2 border-b border-slate-200">
                     <PageHeader title="Projects">
-                        <div className="flex items-center gap-2">
-                            <select onChange={(e) => { setSelectedCategoryId(e.target.value); setPage(1); }} className="p-2 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">All Categories</option>
-                                {categoriesResponse?.data?.map((cat: Category) => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
-                            </select>
-                            <div className="relative">
-                                <FiSearch className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
-                                <input type="text" placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10 pr-4 py-2 w-40 sm:w-64 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                        <div className="flex flex-col md:flex-row md:items-center gap-3">
+                            
+                            {/* Filters Group */}
+                            <div className="flex items-center gap-2">
+                                <select 
+                                    onChange={(e) => { setSelectedCategoryId(e.target.value); setPage(1); }} 
+                                    className="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">All</option>
+                                    {categoriesResponse?.data?.map((cat: Category) => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+                                </select>
+                                <div className="relative w-full md:w-auto">
+                                    <FiSearch className="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search..." 
+                                        value={searchTerm} 
+                                        onChange={(e) => setSearchTerm(e.target.value)} 
+                                        className="pl-10 pr-4 py-2 w-full md:w-52 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
                             </div>
-                            <Button variant="secondary" onClick={() => setCategoryManagerOpen(true)}>Manage Categories</Button>
-                            <Button onClick={handleOpenCreateModal}><FiPlus className="mr-2"/>Add Project</Button>
+
+                            {/* Spacer to push buttons to the right on desktop */}
+                            <div className="hidden md:block md:flex-grow"></div>
+                            
+                            {/* Action Buttons Group */}
+                            <div className="flex items-center gap-2 w-full md:w-auto">
+                                <Button variant="secondary" onClick={() => setCategoryManagerOpen(true)} className="gap-2 w-full md:w-auto">
+                                    <TbCategoryPlus className="my-1" />
+                                    <span className='hidden lg:block'>Manage Categories</span>
+                                </Button>
+                                <Button onClick={handleOpenCreateModal} className="w-full md:w-auto gap-2">
+                                    <FiPlus className="my-1"/>
+                                    <span className='hidden lg:block'>Add Project</span>
+                                </Button>
+                            </div>
                         </div>
                     </PageHeader>
                 </motion.div>
 
                 {/* Section 2: The Scrollable Content */}
                 <div className="flex-grow overflow-y-auto mb-12">
-                    <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} initial="hidden" animate="visible" className="p-6">
+                    <motion.div variants={{ visible: { transition: { staggerChildren: 0.05 } } }} initial="hidden" animate="visible" className="py-6">
                         {isLoading ? (
                             <Spinner overlay={true} text="Loading Project Details..." />
                         ) : projects.length > 0 ? (

@@ -28,7 +28,7 @@ export const loginUser = async ({ email, pass }: LoginCredentials) => {
         id: admin.id,
         email: admin.email,
         name: aboutProfile?.name || 'Admin',
-        image: aboutProfile?.image || null,
+        image: aboutProfile?.image ? `${process.env.BACKEND_URL}/${aboutProfile.image}` : null,
     };
 
     const token = jwt.sign({ userId: admin.id }, process.env.JWT_SECRET!, { expiresIn: '1d' });
