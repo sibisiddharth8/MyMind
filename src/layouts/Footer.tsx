@@ -32,7 +32,7 @@ export default function Footer() {
               <span className="text-xl font-bold text-slate-800">MyMind</span>
             </Link>
             <p className="mt-4 text-sm text-slate-500 max-w-sm">
-              A personal portfolio and content hub by Sibi Siddharth. Designed to showcase projects, skills, and professional experience.
+              A personal portfolio and content hub by Sibi Siddharth S. Designed to showcase projects, skills, and professional experience.
             </p>
           </div>
 
