@@ -56,7 +56,7 @@ export default function TimelineItem({ item, isLast }: TimelineItemProps) {
               {item.description}
             </p>
             {isDescriptionLong && (
-              <button onClick={() => setIsExpanded(!isExpanded)} className="text-sm font-semibold text-blue-600 hover:underline mt-2">
+              <button onClick={() => setIsExpanded(!isExpanded)} className="cursor-pointer text-sm font-semibold text-blue-600 hover:underline mt-2">
                 {isExpanded ? 'Show Less' : 'Read More'}
               </button>
             )}

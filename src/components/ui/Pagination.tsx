@@ -1,4 +1,5 @@
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import ScrollToTop from './ScrollToTop';
 
 interface PaginationProps {
   currentPage: number;
@@ -25,6 +26,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
 
   return (
     <div className="flex items-center justify-center gap-4">
+      <ScrollToTop />
       <button
         onClick={handlePrevious}
         disabled={currentPage === 1}
