@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build && cp CNAME dist/",
+    "build": "vite build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "lint": "eslint .",
