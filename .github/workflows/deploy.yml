@@ -6,28 +6,23 @@ on:
       - master
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build the project
+      - name: Build project
         run: npm run build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
 
-      - name: Set Git Identity
-        run: |
-          git config --global user.name "sibisiddharth8"
-          git config --global user.email "sibisiddharth008@gmail.com"
+      - name: Copy CNAME
+        run: npx cpy CNAME dist/
 
       - name: Deploy to GitHub Pages
         run: npm run deploy
