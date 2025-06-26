@@ -109,7 +109,7 @@ I am incredibly passionate about backend systems and would be happy to provide a
 To run the **public-facing portfolio frontend** locally:
 
 ```bash
-git clone https://github.com/sibisiddharth8/your-repo-name.git
+git clone https://github.com/sibisiddharth8/MyMind.git
 cd your-repo-name
 npm install
 ```
