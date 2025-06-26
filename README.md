@@ -111,7 +111,7 @@ To run the **public-facing portfolio frontend** locally:
 
 ```bash
 git clone https://github.com/sibisiddharth8/MyMind.git
-cd your-repo-name
+cd ./Mymind
 npm install
 ```
 
