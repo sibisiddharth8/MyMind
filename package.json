@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build && npx cpy CNAME dist/",
+    "build": "vite build && npx cpy CNAME dist/ && npx cpy index.html dist/404.html",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist -u \"github-actions-bot <support+actions@github.com>\" -r https://x-access-token:${GITHUB_TOKEN}@github.com/sibisiddharth8/MyMind.git",
     "lint": "eslint .",
