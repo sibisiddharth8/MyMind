@@ -1,9 +1,9 @@
-name: Deploy Portfolio to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - master 
+      - master
 
 jobs:
   deploy:
@@ -21,8 +21,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Vite project
+      - name: Build the project
         run: npm run build
+
+      - name: Set Git Identity
+        run: |
+          git config --global user.name "sibisiddharth8"
+          git config --global user.email "sibisiddharth008@gmail.com"
 
       - name: Deploy to GitHub Pages
         run: npm run deploy
