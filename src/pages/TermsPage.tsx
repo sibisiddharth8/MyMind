@@ -7,6 +7,7 @@ import { FiAlertTriangle } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
 import SectionHeader from '../components/ui/SectionHeader';
 import { Link } from 'react-router-dom';
+import ScrollToTop from '../components/ui/ScrollToTop';
 
 // Local Type Definition
 interface TermAndCondition {
@@ -57,7 +58,11 @@ export default function TermsPage() {
   if (isError) return <div className="text-center p-8 text-red-500">Failed to load terms.</div>;
 
   return (
+    
     <div className="container mx-auto px-6 py-8 md:pb-24">
+      <ScrollToTop />
+
+      {/* Header Section */}
       <div className="text-center mb-16">
         <SectionHeader 
           title="Terms & Conditions"

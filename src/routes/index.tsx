@@ -1,10 +1,11 @@
 import { createHashRouter } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
-import SubPageLayout from '../layouts/SubPageLayout'; // <-- Import the new layout
+import SubPageLayout from '../layouts/SubPageLayout';
 import HomePage from '../pages/HomePage';
 import ProjectsPage from '../pages/ProjectsPage';
 import ProjectDetailPage from '../pages/ProjectDetailPage';
 import TermsPage from '../pages/TermsPage';
+import NotFoundPage from '../pages/NotFoundPage';
 
 export const router = createHashRouter([
   {
@@ -33,6 +34,10 @@ export const router = createHashRouter([
         {
             path: 'terms',
             element: <TermsPage />,
+        },
+        {
+          path: '*',
+          element: <NotFoundPage />,
         },
     ]
   },
