@@ -100,9 +100,10 @@ This engine is the most complex part of the project, featuring:
 - File upload and image handling
 - Over 10 interconnected data models
 
-I am incredibly passionate about backend systems and would be happy to provide a private walkthrough during interviews.
+> 🗝️ **Want a walkthrough of the admin panel or backend code?**  
+> I’d be happy to demonstrate its features privately or during interviews.  
+> 📬 [Contact Me via Get in Touch →](https://www.sibisiddharth.me/)
 
----
 
 ### ⚙️ Get it Running
 
