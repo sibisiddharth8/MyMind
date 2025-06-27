@@ -1,24 +1,17 @@
 import axios from 'axios';
 
-// This script will be run by Vite during the build process
-export default async function getDynamicRoutes() {
-  // We use your live API URL to get the list of projects
-  const apiUrl = 'https://api.sibisiddharth.me/api/projects?limit=1000';
-  
+export default async function getProjectRoutes() {
   try {
-    console.log('Fetching dynamic routes for sitemap...');
-    const response = await axios.get(apiUrl);
-    const projects = response.data.data; // Assuming the API returns { data: [...] }
+    const response = await axios.get('https://api.sibisiddharth.me/api/projects?limit=1000');
+    const projects = response.data.data;
     
     if (!Array.isArray(projects)) {
-      console.warn('Sitemap: Could not generate project routes, API did not return an array.');
       return [];
     }
-    
-    const routes = projects.map((project: { id: string }) => `/projects/${project.id}`);
-    console.log(`Sitemap: Found ${routes.length} project routes.`);
-    return routes;
-  } catch (error: any) {
+
+    // THIS IS THE FIX: We add the '/#' prefix to every project route.
+    return projects.map(project => `/#/projects/${project.id}`);
+  } catch (error) {
     console.warn('Sitemap: Failed to fetch dynamic routes.', error.message);
     return [];
   }
