@@ -1,14 +1,12 @@
-import { useParams, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { FiTag, FiUsers, FiExternalLink, FiCalendar, FiUser } from 'react-icons/fi';
-import { FaGithub } from 'react-icons/fa';
+import { FiTag, FiUsers, FiExternalLink, FiCalendar, FiUser, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { getProjectById } from '../services/projectService';
 import Loader from '../components/ui/Loader';
 import { motion } from 'framer-motion';
 import ScrollToTop from '../components/ui/ScrollToTop';
-import { FaLinkedin } from 'react-icons/fa';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { useState } from 'react';
 
 // --- Local Type Definitions ---
 interface Member { id: string; name: string; profileImage?: string | null; githubLink?: string; linkedinLink?: string; }
@@ -70,15 +68,15 @@ export default function ProjectDetailPage() {
                 <div className="lg:col-span-2 space-y-4">
                     <h2 className="text-2xl font-bold text-slate-800">About this Project</h2>
                     
-                    {/* The description container */}
-                    <div className="prose prose-lg text-slate-600 max-w-none leading-relaxed">
-                        {/* FIX 1: 'whitespace-pre-wrap' preserves formatting. The 'line-clamp' class now applies on all screen sizes by default. */}
-                        <p className={`whitespace-pre-wrap ${!isDescriptionExpanded && 'line-clamp-6'}`}>
-                            {project.description}
-                        </p>
-                    </div>
+                    {/* --- THIS IS THE FIX --- */}
+                    {/* This div now renders the HTML from your rich text editor. */}
+                    {/* The `prose` class styles lists, blockquotes, etc., correctly. */}
+                    {/* The `line-clamp` class is preserved for your "Read More" feature. */}
+                    <div
+                      className={`prose prose-lg max-w-none text-slate-600 leading-relaxed ${!isDescriptionExpanded && isDescriptionLong ? 'line-clamp-6' : ''}`}
+                      dangerouslySetInnerHTML={{ __html: project.description }}
+                    />
                     
-                    {/* FIX 2: The button now appears on all devices (the 'md:hidden' class is removed). */}
                     {isDescriptionLong && (
                         <button 
                             onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
@@ -125,7 +123,7 @@ export default function ProjectDetailPage() {
                 </div>
             </motion.div>
         </div>
-    </main>
+      </main>
     </div>
   );
 }

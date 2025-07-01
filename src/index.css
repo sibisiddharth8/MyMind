@@ -25,3 +25,14 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8; /* slate-400 */
 }
+
+.prose a {
+  color: #2563eb; /* Corresponds to Tailwind's text-blue-600 */
+  text-decoration: underline;
+  font-weight: 500; /* Corresponds to font-medium */
+  transition: color 0.2s ease-in-out;
+}
+
+.prose a:hover {
+  color: #1d4ed8; /* Corresponds to Tailwind's text-blue-800 */
+}
