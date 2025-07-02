@@ -68,12 +68,8 @@ export default function ProjectDetailPage() {
                 <div className="lg:col-span-2 space-y-4">
                     <h2 className="text-2xl font-bold text-slate-800">About this Project</h2>
                     
-                    {/* --- THIS IS THE FIX --- */}
-                    {/* This div now renders the HTML from your rich text editor. */}
-                    {/* The `prose` class styles lists, blockquotes, etc., correctly. */}
-                    {/* The `line-clamp` class is preserved for your "Read More" feature. */}
                     <div
-                      className={`prose prose-lg max-w-none text-slate-600 leading-relaxed ${!isDescriptionExpanded && isDescriptionLong ? 'line-clamp-6' : ''}`}
+                      className={`project-description prose prose-lg max-w-none text-slate-600 leading-relaxed ${!isDescriptionExpanded && isDescriptionLong ? 'line-clamp-6' : ''}`}
                       dangerouslySetInnerHTML={{ __html: project.description }}
                     />
                     
@@ -87,6 +83,8 @@ export default function ProjectDetailPage() {
                         </button>
                     )}
                 </div>
+
+                {/* --- ALL SIDEBAR CONTENT IS RESTORED HERE --- */}
                 <div className="space-y-8">
                     <div>
                         <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2"><FiUsers/> Team</h3>
@@ -124,6 +122,36 @@ export default function ProjectDetailPage() {
             </motion.div>
         </div>
       </main>
+
+      {/* This style block ensures lists and other rich text elements render correctly */}
+      <style>{`
+        .project-description ul {
+          list-style-type: disc !important;
+          margin-left: 1.5rem !important;
+          padding-left: 1rem !important;
+        }
+        .project-description ol {
+          list-style-type: decimal !important;
+          margin-left: 1.5rem !important;
+          padding-left: 1rem !important;
+        }
+        .project-description li {
+          margin-bottom: 0.5rem !important;
+        }
+        .project-description blockquote {
+            border-left: 3px solid #cbd5e1 !important;
+            padding-left: 1rem !important;
+            font-style: italic !important;
+            color: #64748b !important;
+        }
+        .project-description a {
+          color: #2563eb !important;
+          text-decoration: underline !important;
+        }
+        .project-description a:hover {
+          color: #1d4ed8 !important;
+        }
+      `}</style>
     </div>
   );
 }

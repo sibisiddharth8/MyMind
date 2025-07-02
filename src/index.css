@@ -36,3 +36,23 @@ body {
 .prose a:hover {
   color: #1d4ed8; /* Corresponds to Tailwind's text-blue-800 */
 }
+
+.project-description ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+}
+
+.project-description ol {
+  list-style-type: decimal;
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+}
+
+.project-description li {
+  margin-bottom: 0.5rem;
+}
+
+.project-description p:empty {
+  min-height: 1rem;
+}
