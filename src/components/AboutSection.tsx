@@ -93,7 +93,7 @@ export default function AboutSection({ about, links }: AboutSectionProps) {
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <ActionButton href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}><FiMail className="mr-2"/> Get In Touch</ActionButton>
-              {about.cv && <ActionButton href={about.cv} variant="outline" isExternal={true}><FiDownload className="mr-2"/> Download CV</ActionButton>}
+              {about.cv && <ActionButton href={about.cv} variant="outline" isExternal={true}><FiDownload className="mr-2"/> Resume</ActionButton>}
             </div>
           </motion.div>
 
