@@ -3,7 +3,7 @@ import { FiBox, FiArrowUp, FiStar, FiGitPullRequest, FiGitBranch, FiExternalLink
 import { VscRepo, VscGitCommit, VscSourceControl, VscError, VscRocket } from 'react-icons/vsc';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import SocialLinks from '../components/ui/SocialLinks';
-import {React, useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 // A mapping of event types to icons and readable text
 const eventConfig = {
@@ -39,7 +39,13 @@ export default function Footer() {
         const fetchGitHubData = async () => {
             try {
                 setLoading(true);
-                const headers = { 'Accept': 'application/vnd.github.v3+json' };
+                const headers: { [key: string]: string } = { 'Accept': 'application/vnd.github.v3+json' };
+
+                const token = import.meta.env.VITE_APP_GITHUB_TOKEN;
+
+                if (token) {
+                  headers['Authorization'] = `token ${token}`;
+                }
                 
                 const [reposRes, commitsRes, pullsRes, eventsRes] = await Promise.all([
                     fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=pushed`, { headers }),
