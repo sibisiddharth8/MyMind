@@ -247,6 +247,13 @@ export default function Footer() {
                             </button>
                         </div>
                     </div>
+                    
+                </div>
+                <div className="flex items-center gap-5">
+                    <Link to="/privacy" className="text-sm text-slate-500 hover:text-blue-600 hover:underline">Privacy Policy</Link>
+                    <Link to="/cancellation" className="text-sm text-slate-500 hover:text-blue-600 hover:underline">Cancellation Policy</Link>
+                    <Link to="/shipping" className="text-sm text-slate-500 hover:text-blue-600 hover:underline">Shipping Policy</Link>
+                    <Link to="/contact" className="text-sm text-slate-500 hover:text-blue-600 hover:underline">Contact</Link>
                 </div>
             </div>
         </footer>

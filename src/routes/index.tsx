@@ -7,9 +7,13 @@ import ProjectDetailPage from '../pages/ProjectDetailPage';
 import TermsPage from '../pages/TermsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
+import PrivacyPolicy from '../temp/PrivacyPolicy';
+import CancellationRefundPolicy from '../temp/CancellationRefundPolicy';
+import ContactUs from '../temp/ContactUs';
+import ShippingPolicy from '../temp/ShippingPolicy';
+
 export const router = createHashRouter([
   {
-    // Group 1: Pages using the Main Layout (with full navigation)
     path: '/',
     element: <MainLayout />,
     children: [
@@ -19,7 +23,6 @@ export const router = createHashRouter([
       },
     ],
   },
-  // Group 2: Pages using the Sub-Page Layout (with a simple "Back" button)
   {
     element: <SubPageLayout />,
     children: [
@@ -35,6 +38,26 @@ export const router = createHashRouter([
             path: 'terms',
             element: <TermsPage />,
         },
+
+
+        {
+            path: 'privacy',
+            element: <PrivacyPolicy />,
+        },
+        {
+            path: 'cancellation',
+            element: <CancellationRefundPolicy />,
+        },
+        {
+            path: 'contact',
+            element: <ContactUs />,
+        },
+        {
+            path: 'shipping',
+            element: <ShippingPolicy />,
+        },
+
+        
         {
           path: '*',
           element: <NotFoundPage />,
