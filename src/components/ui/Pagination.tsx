@@ -12,6 +12,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
     return null;
   }
 
+  if (currentPage > totalPages) {
+    onPageChange(totalPages);
+  }
+
   const handlePrevious = () => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);

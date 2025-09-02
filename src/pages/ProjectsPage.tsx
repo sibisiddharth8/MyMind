@@ -11,15 +11,18 @@ import Loader from '../components/ui/Loader';
 import ScrollToTop from '../components/ui/ScrollToTop';
 import SectionHeader from '../components/ui/SectionHeader';
 
-// Local Type Definitions
 interface Project { id: string; name: string; projectImage: string | null; startDate: string; endDate?: string | null; githubLink?: string | null; liveLink?: string | null; tags: string[]; category: { name: string }; members: any[]; description: string; }
 interface Category { id: string; name: string; description?: string; projectCount?: number; }
 
 export default function ProjectsPage() {
     const [page, setPage] = useState(1);
-    const [selectedCategoryId, setSelectedCategoryId] = useState(''); // Empty string for "All"
+    const [selectedCategoryId, setSelectedCategoryId] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+    const handleCategoryChange = (categoryId: string) => {
+        setSelectedCategoryId(categoryId);
+        setPage(1);
+    }
 
     useEffect(() => {
         const timerId = setTimeout(() => {
@@ -48,22 +51,19 @@ export default function ProjectsPage() {
                     <SectionHeader title="All Projects" description="Here's a collection of my work. Feel free to filter by category or search for a specific project." />
                 </motion.div>
 
-                {/* --- NEW, IMPROVED FILTER AND SEARCH SECTION --- */}
                 <div className="my-10 space-y-6">
-                    {/* Category Filter Tabs */}
                     <div className='flex items-center justify-center'>
                         <div className="flex items-center justify-start gap-2 overflow-x-auto pb-2">
-                        <button onClick={() => setSelectedCategoryId('')} className={`cursor-pointer px-4 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap ${selectedCategoryId === '' ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>
+                        <button onClick={() => handleCategoryChange('')} className={`cursor-pointer px-4 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap ${selectedCategoryId === '' ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>
                             All
                         </button>
                         {categories.map((cat: Category) => (
-                             <button key={cat.id} onClick={() => setSelectedCategoryId(cat.id)} className={`cursor-pointer px-4 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap ${selectedCategoryId === cat.id ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>
+                             <button key={cat.id} onClick={() => handleCategoryChange(cat.id)} className={`cursor-pointer px-4 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap ${selectedCategoryId === cat.id ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100'}`}>
                                 {cat.name}
                             </button>
                         ))}
                     </div>
                     </div>
-                    {/* Search Bar */}
                     <div className="relative">
                         <FiSearch className="absolute top-1/2 left-4 -translate-y-1/2 text-slate-400" />
                         <input 
@@ -76,7 +76,6 @@ export default function ProjectsPage() {
                     </div>
                 </div>
 
-                {/* Content Grid */}
                 {isLoading && <div className="h-96 flex justify-center items-center"><Loader /></div>}
                 {isError && <div className="text-center py-16 text-red-500">Failed to load projects. Please try again later.</div>}
                 {!isLoading && !isError && (
@@ -98,7 +97,6 @@ export default function ProjectsPage() {
                     </motion.div>
                 )}
 
-                {/* Pagination */}
                 {pagination && pagination.totalPages > 1 && (
                     <div className="mt-16">
                         <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} onPageChange={(newPage) => setPage(newPage)} />
