@@ -9,6 +9,7 @@ export default async function getProjectRoutes() {
       return [];
     }
 
+    // test deploy
     return projects.map(project => `/#/projects/${project.id}`);
   } catch (error) {
     console.warn('Sitemap: Failed to fetch dynamic routes.', error.message);
