@@ -5,7 +5,6 @@ import { usePortfolioData } from '../hooks/usePortfolioData';
 import SocialLinks from '../components/ui/SocialLinks';
 import { useState, useEffect, useMemo } from 'react';
 
-// A mapping of event types to icons and readable text
 const eventConfig = {
     'PushEvent': { icon: <VscGitCommit className="text-sky-600" />, label: 'Pushed to' },
     'CreateEvent': { icon: <VscRepo className="text-emerald-600" />, label: 'Created repo' },
@@ -17,24 +16,21 @@ const eventConfig = {
 export default function Footer() {
     const { links } = usePortfolioData();
     const currentYear = new Date().getFullYear();
-    const username = "sibisiddharth8"; // Your GitHub username
+    const username = "sibisiddharth8";
 
-    // --- STATE MANAGEMENT ---
     const [stats, setStats] = useState({ stars: 0, commits: 0, prs: 0, repos: 0 });
     const [allRepos, setAllRepos] = useState([]);
     const [latestActivity, setLatestActivity] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // State for search and sort
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortBy, setSortBy] = useState('popular'); // 'popular' or 'recent'
+    const [sortBy, setSortBy] = useState('popular');
 
     const handleScrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // --- DATA FETCHING ---
     useEffect(() => {
         const fetchGitHubData = async () => {
             try {
@@ -89,7 +85,6 @@ export default function Footer() {
         fetchGitHubData();
     }, [username]);
 
-    // --- CLIENT-SIDE SEARCH & SORT ---
     const displayedRepos = useMemo(() => {
         return allRepos
             .filter(repo => repo.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -97,14 +92,12 @@ export default function Footer() {
                 if (sortBy === 'popular') {
                     return b.stargazers_count - a.stargazers_count;
                 }
-                // 'recent'
                 return new Date(b.pushed_at) - new Date(a.pushed_at);
             })
             .slice(0, 3);
     }, [allRepos, searchTerm, sortBy]);
 
 
-    // --- SUB-COMPONENTS ---
     const Skeleton = ({ className }) => <div className={`animate-pulse bg-slate-200 rounded-md ${className}`}></div>;
     
     const LiveIndicator = () => (
@@ -122,11 +115,8 @@ export default function Footer() {
             <div className="container mx-auto px-6">
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-12 py-12">
-
-                    {/* Left Column: Featured Repositories with Search & Sort */}
                     <div className="md:col-span-2">
                         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
-                           {/* Search Input */}
                             <div className="relative w-full sm:w-64">
                                 <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input
@@ -137,7 +127,6 @@ export default function Footer() {
                                     className="w-full bg-white border border-slate-200 rounded-md pl-9 pr-3 py-1.5 text-sm placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                                 />
                             </div>
-                           {/* Sort Toggle */}
                             <div className="flex-shrink-0 flex items-center bg-slate-200/80 p-1 rounded-md">
                                 <button
                                     onClick={() => setSortBy('popular')}
@@ -184,7 +173,6 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Right Column: Live Activity */}
                     <div>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-sm font-semibold text-slate-900">Live Activity</h3>
@@ -213,7 +201,6 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* --- Bottom Bar: Copyright, Social, Stats & Utility Links --- */}
                 <div className="border-t border-slate-200 py-6 flex flex-col lg:flex-row justify-between items-center gap-6">
                     <div className="text-center lg:text-left">
                          <Link to="/" className="flex items-center justify-center lg:justify-start gap-2 mb-2">
@@ -236,15 +223,17 @@ export default function Footer() {
                                 ))
                             }
                         </div>
-                        
-                        <div className="hidden sm:block h-6 w-px bg-slate-300"></div>
 
-                        <div className="flex items-center gap-5">
-                            <SocialLinks links={links} />
-                            <Link to="/terms" className="text-sm text-slate-500 hover:text-blue-600 hover:underline">Terms</Link>
-                            <button onClick={handleScrollToTop} className="text-slate-500 hover:text-blue-600" title="Back to top">
-                                <FiArrowUp size={20}/>
-                            </button>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <div>
+                                <SocialLinks links={links} />
+                            </div>
+                            <div className='flex items-center justify-center'>
+                                <Link to="/terms" className="text-sm text-slate-500 hover:text-blue-600 hover:underline">Terms & Conditions</Link>
+                                {/* <button onClick={handleScrollToTop} className="cursor-pointer text-slate-500 hover:text-blue-600 absolute right-10" title="Back to top">
+                                    <FiArrowUp size={20}/>
+                                </button> */}
+                            </div>
                         </div>
                     </div>
                 </div>
