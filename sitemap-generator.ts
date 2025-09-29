@@ -9,7 +9,6 @@ export default async function getProjectRoutes() {
       return [];
     }
 
-    // THIS IS THE FIX: We add the '/#' prefix to every project route.
     return projects.map(project => `/#/projects/${project.id}`);
   } catch (error) {
     console.warn('Sitemap: Failed to fetch dynamic routes.', error.message);
