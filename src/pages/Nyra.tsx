@@ -13,6 +13,10 @@ const Nyra = () => {
         document.title = "Nyra | The Anodite Queen";
     }, []);
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const fadeIn = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { duration: 0.8 } },
