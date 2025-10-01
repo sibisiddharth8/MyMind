@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { FiTag, FiUsers, FiExternalLink, FiCalendar, FiUser, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
@@ -11,6 +11,7 @@ import ScrollToTop from '../components/ui/ScrollToTop';
 import { useState } from 'react';
 import { generateAIDescription_Public } from '../services/aiService';
 import toast from 'react-hot-toast';
+import Nyra from '../assets/Nyra_logo.png';
 
 interface Member { id: string; name: string; profileImage?: string | null; githubLink?: string; linkedinLink?: string; }
 interface ProjectMember { id: string; role: string; member: Member; }
@@ -61,7 +62,10 @@ function AiSummary({ projectId, existingAiDescription }: AiSummaryProps) {
     if (isGenerating) {
         return (
             <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200">
-                <h3 className="text-xl font-bold text-slate-800 mb-4">Nyra is summarizing...</h3>
+                <div className="flex items-center gap-2 mb-4">
+                    <img src={Nyra} alt="Nyra" className="h-10 w-10 rounded-full ring-1 ring-blue-200" />
+                    <h3 className="text-xl font-bold text-slate-800">Nyra is summarizing...</h3>
+                </div>
                 <SummarySkeleton />
             </div>
         );
@@ -75,10 +79,13 @@ function AiSummary({ projectId, existingAiDescription }: AiSummaryProps) {
                 transition={{ duration: 0.5 }}
                 className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 relative"
             >
-                <div className="absolute top-0 right-0 -mt-4 -mr-2 flex items-center justify-center h-10 w-10 bg-white rounded-full shadow-lg">
+                <div className="absolute top-0 right-0 -mt-4 -mr-2 flex items-center justify-center h-10 w-10 bg-white rounded-full shadow-lg border border-blue-200">
                     <RiSparklingLine className="text-blue-500 h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-3">Nyra's Summary</h3>
+                <div className="flex items-center gap-2 mb-4">
+                    <img src={Nyra} alt="Nyra" className="h-10 w-10 rounded-full ring-1 ring-blue-200" />
+                    <h3 className="text-xl font-bold text-slate-800">Nyra's Summary</h3>
+                </div>
                 <div 
                     className="project-description prose prose-lg max-w-none text-slate-700" 
                     dangerouslySetInnerHTML={{ __html: aiContent }} 
@@ -95,7 +102,10 @@ function AiSummary({ projectId, existingAiDescription }: AiSummaryProps) {
                 disabled={mutation.isPending}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 text-white font-semibold rounded-lg shadow-md hover:bg-slate-900 transition-all duration-300 transform hover:scale-102 disabled:opacity-50 disabled:scale-100 cursor-pointer"
             >
-                <RiSparklingLine />
+                {/* <RiSparklingLine /> */}
+                <div className="w-6 h-6 rounded-full">
+                  <img className='object-cover rounded-full' src={Nyra} alt="Nyra" />
+                </div>
                 Ask Nyra to summarize?
             </button>
         </div>
@@ -181,7 +191,7 @@ export default function ProjectDetailPage() {
                             <div className='flex items-start gap-1 justify-center'>
                               <RiInformationLine className='mt-0.5'/>
                               <div className='text-slate-500 text-sm text-start'>
-                                <span className='font-bold text-slate-700 text-sm'>Nyra </span>is still learning and could make mistakes, so please verify the information provided.
+                                <Link to="/nyra" className='font-bold text-slate-700 text-sm hover:text-slate-800 hover:underline'>Nyra</Link> is an Anodite, wanna know about her? <Link to="/nyra" className='font-bold text-slate-700 text-sm hover:text-slate-800 hover:underline'>Click here</Link>.
                               </div>
                             </div>
                             

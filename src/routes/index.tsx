@@ -6,6 +6,7 @@ import ProjectsPage from '../pages/ProjectsPage';
 import ProjectDetailPage from '../pages/ProjectDetailPage';
 import TermsPage from '../pages/TermsPage';
 import NotFoundPage from '../pages/NotFoundPage';
+import Nyra from '../pages/Nyra';
 
 
 export const router = createHashRouter([
@@ -33,6 +34,10 @@ export const router = createHashRouter([
         {
             path: 'terms',
             element: <TermsPage />,
+        },
+        {
+            path: 'nyra',
+            element: <Nyra />,
         },
         {
           path: '*',
