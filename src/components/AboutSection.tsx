@@ -8,7 +8,15 @@ import Loader from './ui/Loader';
 
 interface AboutData { name: string; roles: string[]; description: string; image?: string; cv?: string; }
 interface LinksData { github?: string; linkedin?: string; instagram?: string; portal?: string; }
-const scrollToSection = (id: string) => {};
+const scrollToSection = (id: string) => {
+  const element = document.getElementById(id);
+  if (element) {
+    const headerOffset = 90; 
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+  }
+};
 
 
 export default function AboutSection() {

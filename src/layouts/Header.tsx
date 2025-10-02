@@ -44,19 +44,17 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
-  // --- THIS IS THE FIX ---
-  // This effect adds/removes a style to the body to prevent background scrolling when the menu is open.
   useEffect(() => {
     if (isMenuOpen) {
         document.body.style.overflow = 'hidden';
     } else {
         document.body.style.overflow = 'auto';
     }
-    // Cleanup function to restore scrolling when the component unmounts
+
     return () => {
         document.body.style.overflow = 'auto';
     };
-  }, [isMenuOpen]); // This effect runs every time 'isMenuOpen' changes
+  }, [isMenuOpen]);
 
 
   const navLinks = [
