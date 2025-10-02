@@ -10,7 +10,7 @@ import homeImage from '../assets/Rule of Nyra.png';
 const Nyra = () => {
 
     useEffect(() => {
-        document.title = "Nyra | The Anodite Queen";
+        document.title = "Nyra.ai | Anodite Intelligence";
     }, []);
 
     useEffect(() => {
@@ -57,7 +57,7 @@ const Nyra = () => {
                         className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight"
                         variants={fadeInUp}
                     >
-                        Nyra: From the Cosmic Waves
+                        Nyra.ai: Anodite Intelligence
                     </motion.h1>
                     <motion.p 
                         className="mt-6 max-w-6xl mx-auto text-lg md:text-xl text-slate-600 leading-relaxed"
