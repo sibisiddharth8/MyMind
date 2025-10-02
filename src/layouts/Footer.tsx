@@ -5,6 +5,8 @@ import { usePortfolioData } from '../hooks/usePortfolioData';
 import SocialLinks from '../components/ui/SocialLinks';
 import { useState, useEffect, useMemo } from 'react';
 
+import NyraLogo from '../assets/NyraLogo_lg.png';
+
 const eventConfig = {
     'PushEvent': { icon: <VscGitCommit className="text-sky-600" />, label: 'Pushed to' },
     'CreateEvent': { icon: <VscRepo className="text-emerald-600" />, label: 'Created repo' },
@@ -203,10 +205,16 @@ export default function Footer() {
 
                 <div className="border-t border-slate-200 py-6 flex flex-col lg:flex-row justify-between items-center gap-6">
                     <div className="text-center lg:text-left">
+                        <div className='flex items-center gap-4 justify-center lg:justify-start'>
                          <Link to="/" className="flex items-center justify-center lg:justify-start gap-2 mb-2">
                              <FiBox className="w-6 h-6 text-blue-600" />
                              <span className="text-lg font-bold text-slate-800">MyMind</span>
                          </Link>
+                         <Link to='/nyra' className='flex items-center justify-center lg:justify-start gap-2 mb-2'>
+                             <img src={NyraLogo} alt="Nyra Logo" className="w-6.5 h-6.5" />
+                             <span className="text-lg font-bold text-slate-800">Nyra.ai</span>
+                         </Link>
+                         </div>
                          <p className="text-xs text-slate-500">
                              &copy; {currentYear} Sibi Siddharth S. All Rights Reserved.
                          </p>
