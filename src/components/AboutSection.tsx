@@ -74,10 +74,10 @@ export default function AboutSection() {
 
   return (
     <section id="about" className="min-h-screen flex items-center pb-16 md:pb-24 lg:px-16 bg-slate-100/70">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-6 py-6 lg:py-0">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
           
-          <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" }} className="order-2 md:order-1">
+          <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" }} className="order-2 lg:order-1 flex flex-col lg:items-start md:items-center md:text-center lg:text-left">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
               {about.name}
             </h1>
@@ -101,7 +101,7 @@ export default function AboutSection() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0, 0.71, 0.2, 1.01] }} className="w-full max-w-sm mx-auto order-1 md:order-2">
+          <motion.div initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0, 0.71, 0.2, 1.01] }} className="w-full max-w-sm mx-auto order-1 lg:order-2">
             <div className="relative p-2 rounded-full border-2 border-slate-200">
               {about.image ? (
                 <img src={about.image} alt={about.name} className="w-full rounded-full aspect-square object-cover" />

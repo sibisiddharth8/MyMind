@@ -3,12 +3,11 @@
 @import "tailwindcss";
 
 body {
-  @apply font-sans bg-slate-50 text-slate-800;
+  @apply font-sans bg-slate-100/70 text-slate-800;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   font-family: "Inter", "sans-serif";
-
+  /* bg-slate-100/70 */
 }
 
 /* Add a subtle scrollbar style */
