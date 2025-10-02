@@ -99,7 +99,7 @@ export default function Header() {
           className={`fixed top-4 right-4 z-40 transition-shadow duration-300 rounded-full ${isScrolled ? 'shadow-lg' : 'shadow'}`}
         >
           <div
-            className="flex items-center bg-slate-50 backdrop-blur-xl border border-white/20 rounded-full p-2"
+            className="flex items-center bg-slate-100/70 backdrop-blur-xl border border-white/20 rounded-full p-2"
             onMouseLeave={() => setHoveredLink(null)}
           >
             {navLinks.map(link => (
