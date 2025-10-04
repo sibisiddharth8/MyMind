@@ -74,7 +74,7 @@ export default function AboutSection() {
 
   return (
     <section id="about" className="min-h-screen flex items-center pb-16 md:pb-24 lg:px-16 bg-slate-100/70">
-      <div className="container mx-auto px-6 py-6 lg:py-0">
+      <div className="container mx-auto px-4 py-6 lg:py-0">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           
           <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" }} className="order-2 lg:order-1 flex flex-col lg:items-start md:items-center md:text-center lg:text-left">

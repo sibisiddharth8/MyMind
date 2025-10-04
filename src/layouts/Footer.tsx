@@ -5,7 +5,7 @@ import { usePortfolioData } from '../hooks/usePortfolioData';
 import SocialLinks from '../components/ui/SocialLinks';
 import { useState, useEffect, useMemo } from 'react';
 
-import NyraLogo from '../assets/NyraLogo_lg.png';
+import NyraLogo from '../assets/NyraAICropped.png';
 
 const eventConfig = {
     'PushEvent': { icon: <VscGitCommit className="text-sky-600" />, label: 'Pushed to' },
@@ -211,7 +211,7 @@ export default function Footer() {
                              <span className="text-lg font-bold text-slate-800">MyMind</span>
                          </Link>
                          <Link to='/nyra' className='flex items-center justify-center lg:justify-start gap-2 mb-2'>
-                             <img src={NyraLogo} alt="Nyra Logo" className="w-6.5 h-6.5" />
+                             <img src={NyraLogo} alt="Nyra Logo" className="h-6.5" />
                              <span className="text-lg font-bold text-slate-800">Nyra.ai</span>
                          </Link>
                          </div>

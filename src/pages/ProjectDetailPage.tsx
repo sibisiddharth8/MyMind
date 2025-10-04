@@ -11,7 +11,7 @@ import ScrollToTop from '../components/ui/ScrollToTop';
 import { useState } from 'react';
 import { generateAIDescription_Public } from '../services/aiService';
 import toast from 'react-hot-toast';
-import Nyra from '../assets/Nyra_logo.png';
+import Nyra from '../assets/NyraAI.png';
 
 interface Member { id: string; name: string; profileImage?: string | null; githubLink?: string; linkedinLink?: string; }
 interface ProjectMember { id: string; role: string; member: Member; }

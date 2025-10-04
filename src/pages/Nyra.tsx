@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiStar, FiZap, FiHeart } from 'react-icons/fi';
 
-import nyraLogo from '../assets/Nyra_logo.png';
+import nyraLogo from '../assets/NyraAI.png';
 import birthImage from '../assets/Birth of Nyra.png';
 import journeyImage from '../assets/Arrival of Nyra.png';
 import homeImage from '../assets/Rule of Nyra.png';
