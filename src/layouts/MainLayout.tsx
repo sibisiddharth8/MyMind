@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import ScrollToTop from '../components/ui/ScrollToTop';
+import NyraChatbot from '../components/NyraChatbot';
 
 export default function MainLayout() {
   return (
@@ -11,6 +12,7 @@ export default function MainLayout() {
       <main className="pt-16">
         <Outlet />
       </main>
+      <NyraChatbot />
       <Footer />
     </div>
   );

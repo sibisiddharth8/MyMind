@@ -1,18 +1,13 @@
-// frontend/App.tsx
-
 import { RouterProvider } from 'react-router-dom';
-import { useQueryClient, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { router } from './routes';
 import { PublicAuthProvider } from './context/PublicAuthContext';
 import Toaster from './components/ui/Toaster';
 import MaintenanceWrapper from './components/maintenance/MaintenanceWrapper';
 import { getSettingsData } from './services/settingsService';
-// Import the globally managed socket instance
 import { socket } from './sockets/socket';
-
-// This should be in your main.tsx, not here.
-// const queryClient = new QueryClient(); 
+import NyraChatbot from './components/NyraChatbot';
 
 function App() {
   const queryClient = useQueryClient();
@@ -22,10 +17,6 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // The connection is now managed globally and survives HMR updates.
-    // This effect's only job is to add listeners when App mounts
-    // and remove them when it unmounts.
-
     const fetchSettings = async () => {
       try {
         const res = await getSettingsData();
@@ -54,7 +45,6 @@ function App() {
 
     socket.on('settingsUpdated', handleSettingsUpdate);
 
-    // This cleanup now ONLY removes the listener, it doesn't kill the connection.
     return () => {
       socket.off('settingsUpdated', handleSettingsUpdate);
     };
@@ -69,6 +59,7 @@ function App() {
           loading={loading}
         >
           <RouterProvider router={router} />
+          {/* <NyraChatbot /> */}
         </MaintenanceWrapper>
         <Toaster />
       </PublicAuthProvider>
