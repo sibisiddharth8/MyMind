@@ -1,6 +1,4 @@
 import apiClient from './apiClient';
-
-// Local type definition for this service. Not exported.
 interface AboutData {
   id: string;
   name: string;
@@ -15,9 +13,6 @@ interface ApiResponse {
     data: AboutData;
 }
 
-/**
- * Fetches the main "About" data for the portfolio.
- */
 export const getAboutData = async (): Promise<ApiResponse> => {
   const { data } = await apiClient.get('/about');
   return data;

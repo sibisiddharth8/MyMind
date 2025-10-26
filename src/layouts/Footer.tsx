@@ -1,106 +1,66 @@
 import { Link } from 'react-router-dom';
-import { FiBox, FiArrowUp, FiStar, FiGitPullRequest, FiGitBranch, FiExternalLink, FiSearch, FiTrendingUp, FiClock } from 'react-icons/fi';
+import { FiBox, FiArrowUp, FiStar, FiGitPullRequest, FiGitBranch, FiSearch, FiTrendingUp, FiClock } from 'react-icons/fi';
 import { VscRepo, VscGitCommit, VscSourceControl, VscError, VscRocket } from 'react-icons/vsc';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import SocialLinks from '../components/ui/SocialLinks';
-import { useState, useEffect, useMemo } from 'react';
-
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getGitHubOverview, getGitHubRepos } from '../services/githubService';
+import { useDebounce } from '../hooks/useDebounce';
+import RepoCardSkeleton from '../components/footer/RepoCardSkeleton';
 import NyraLogo from '../assets/NyraAICropped.png';
 
-const eventConfig = {
-    'PushEvent': { icon: <VscGitCommit className="text-sky-600" />, label: 'Pushed to' },
-    'CreateEvent': { icon: <VscRepo className="text-emerald-600" />, label: 'Created repo' },
-    'PullRequestEvent': { icon: <FiGitPullRequest className="text-violet-600" />, label: 'Opened PR in' },
-    'IssuesEvent': { icon: <VscError className="text-rose-600" />, label: 'Opened issue in' },
-    'ReleaseEvent': { icon: <VscRocket className="text-amber-600" />, label: 'New release in' },
+const eventIcons: { [key: string]: JSX.Element } = {
+    'VscGitCommit': <VscGitCommit className="text-sky-600" />,
+    'VscRepo': <VscRepo className="text-emerald-600" />,
+    'FiGitPullRequest': <FiGitPullRequest className="text-violet-600" />,
+    'VscError': <VscError className="text-rose-600" />,
+    'VscRocket': <VscRocket className="text-amber-600" />,
 };
 
 export default function Footer() {
     const { links } = usePortfolioData();
     const currentYear = new Date().getFullYear();
-    const username = "sibisiddharth8";
-
-    const [stats, setStats] = useState({ stars: 0, commits: 0, prs: 0, repos: 0 });
-    const [allRepos, setAllRepos] = useState([]);
-    const [latestActivity, setLatestActivity] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState('popular');
+    const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+    const { 
+        data: overviewData, 
+        isLoading: isOverviewLoading, 
+        error: overviewError 
+    } = useQuery({
+        queryKey: ['githubOverview'],
+        queryFn: getGitHubOverview,
+        staleTime: 10 * 60 * 1000,
+        refetchOnWindowFocus: false,
+    });
+
+    const { 
+        data: displayedRepos, 
+        isLoading: isReposLoading,
+        error: reposError 
+    } = useQuery({
+        queryKey: ['githubRepos', sortBy, debouncedSearchTerm],
+        queryFn: () => getGitHubRepos(debouncedSearchTerm, sortBy),
+        keepPreviousData: true,
+    });
+
+    const stats = overviewData?.stats || { stars: -1, commits: 0, prs: 0, repos: 0 };
+    const latestActivity = overviewData?.latestActivity || [];
+    const repos = displayedRepos || [];
+    
+    const loadingStats = isOverviewLoading;
+    const loadingRepos = isReposLoading;
+    
+    const errorMessage = overviewError ? (overviewError as Error).message : (reposError ? (reposError as Error).message : null);
 
     const handleScrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    useEffect(() => {
-        const fetchGitHubData = async () => {
-            try {
-                setLoading(true);
-                const headers: { [key: string]: string } = { 'Accept': 'application/vnd.github.v3+json' };
-
-                const token = import.meta.env.VITE_APP_GITHUB_TOKEN;
-
-                if (token) {
-                  headers['Authorization'] = `token ${token}`;
-                }
-                
-                const [reposRes, commitsRes, pullsRes, eventsRes] = await Promise.all([
-                    fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=pushed`, { headers }),
-                    fetch(`https://api.github.com/search/commits?q=author:${username}`, { headers }),
-                    fetch(`https://api.github.com/search/issues?q=author:${username}+is:pr`, { headers }),
-                    fetch(`https://api.github.com/users/${username}/events/public?per_page=5`, { headers })
-                ]);
-
-                if (!reposRes.ok || !commitsRes.ok || !pullsRes.ok || !eventsRes.ok) {
-                    if (reposRes.status === 403) throw new Error('GitHub API rate limit exceeded.');
-                    throw new Error('Failed to fetch data from GitHub.');
-                }
-
-                const reposData = await reposRes.json();
-                const commitsData = await commitsRes.json();
-                const pullsData = await pullsRes.json();
-                const eventsData = await eventsRes.json();
-                
-                const nonForkedRepos = reposData.filter(r => !r.fork);
-                setAllRepos(nonForkedRepos);
-
-                setStats({
-                    stars: nonForkedRepos.reduce((acc, repo) => acc + repo.stargazers_count, 0),
-                    commits: commitsData.total_count,
-                    prs: pullsData.total_count,
-                    repos: nonForkedRepos.length
-                });
-
-                const filteredEvents = eventsData.filter(event => eventConfig[event.type]).slice(0, 3);
-                setLatestActivity(filteredEvents);
-
-                setError(null);
-            } catch (err) {
-                setError(err.message);
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchGitHubData();
-    }, [username]);
-
-    const displayedRepos = useMemo(() => {
-        return allRepos
-            .filter(repo => repo.name.toLowerCase().includes(searchTerm.toLowerCase()))
-            .sort((a, b) => {
-                if (sortBy === 'popular') {
-                    return b.stargazers_count - a.stargazers_count;
-                }
-                return new Date(b.pushed_at) - new Date(a.pushed_at);
-            })
-            .slice(0, 3);
-    }, [allRepos, searchTerm, sortBy]);
-
-
-    const Skeleton = ({ className }) => <div className={`animate-pulse bg-slate-200 rounded-md ${className}`}></div>;
+    const Skeleton = ({ className }: { className: string }) => <div className={`animate-pulse bg-slate-200 rounded-md ${className}`}></div>;
     
     const LiveIndicator = () => (
         <div className="flex items-center gap-2 text-xs text-green-600">
@@ -146,10 +106,10 @@ export default function Footer() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {loading ? (
-                                Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-32" />)
-                            ) : error ? (
-                                <p className="text-red-500 text-xs col-span-full">{error}</p>
+                            {loadingRepos ? (
+                                Array.from({ length: 3 }).map((_, i) => <RepoCardSkeleton key={i} />)
+                            ) : errorMessage ? (
+                                <p className="text-red-500 text-xs col-span-full">{errorMessage}</p>
                             ) : displayedRepos.length > 0 ? (
                                 displayedRepos.map(repo => (
                                     <a key={repo.id} href={repo.html_url} target="_blank" rel="noopener noreferrer" 
@@ -170,7 +130,12 @@ export default function Footer() {
                                     </a>
                                 ))
                             ) : (
-                                <p className="text-slate-500 text-sm col-span-full text-center py-8">No repositories found for "{searchTerm}".</p>
+                                <p className="text-slate-500 text-sm col-span-full text-center py-8">
+                                    {debouncedSearchTerm 
+                                        ? `No repositories found for "${searchTerm}".`
+                                        : "No popular repositories to display." 
+                                    }
+                                </p>
                             )}
                         </div>
                     </div>
@@ -181,23 +146,23 @@ export default function Footer() {
                             <LiveIndicator />
                         </div>
                         <div className="space-y-3">
-                            {loading ? (
+                            {loadingStats ? (
                                 Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-10" />)
                             ) : latestActivity.length > 0 ? (
                                 latestActivity.map(event => (
                                     <div key={event.id} className="flex items-center gap-3 text-xs">
-                                        <div className="flex-shrink-0">{eventConfig[event.type]?.icon}</div>
+                                        <div className="flex-shrink-0">{eventIcons[event.config.icon]}</div>
                                         <div className="text-slate-600">
-                                            {eventConfig[event.type]?.label}{' '}
-                                            <a href={`https://github.com/${event.repo.name}`} target="_blank" rel="noopener noreferrer" 
-                                               className="font-semibold text-slate-800 hover:underline">
-                                               {event.repo.name.split('/')[1]}
+                                            {event.config.label}{' '}
+                                            <a href={event.repoUrl} target="_blank" rel="noopener noreferrer" 
+                                                className="font-semibold text-slate-800 hover:underline">
+                                                {event.repoName}
                                             </a>
                                         </div>
                                     </div>
                                 ))
                             ) : (
-                                 <p className="text-slate-500 text-xs">No recent public activity.</p>
+                                <p className="text-slate-500 text-xs">No recent public activity.</p>
                             )}
                         </div>
                     </div>
@@ -206,24 +171,24 @@ export default function Footer() {
                 <div className="border-t border-slate-200 py-6 flex flex-col lg:flex-row justify-between items-center gap-6">
                     <div className="text-center lg:text-left">
                         <div className='flex items-center gap-4 justify-center lg:justify-start'>
-                         <Link to="/" className="flex items-center justify-center lg:justify-start gap-2 mb-2">
-                             <FiBox className="w-6 h-6 text-blue-600" />
-                             <span className="text-lg font-bold text-slate-800">MyMind</span>
-                         </Link>
-                         <Link to='/nyra' className='flex items-center justify-center lg:justify-start gap-2 mb-2'>
-                             <img src={NyraLogo} alt="Nyra Logo" className="h-6.5" />
-                             <span className="text-lg font-bold text-slate-800">Nyra.ai</span>
-                         </Link>
-                         </div>
-                         <p className="text-xs text-slate-500">
-                             &copy; {currentYear} Sibi Siddharth S. All Rights Reserved.
-                         </p>
+                            <Link to="/" className="flex items-center justify-center lg:justify-start gap-2 mb-2">
+                                <FiBox className="w-6 h-6 text-blue-600" />
+                                <span className="text-lg font-bold text-slate-800">MyMind</span>
+                            </Link>
+                            <Link to='/nyra' className='flex items-center justify-center lg:justify-start gap-2 mb-2'>
+                                <img src={NyraLogo} alt="Nyra Logo" className="h-6.5" />
+                                <span className="text-lg font-bold text-slate-800">Nyra.ai</span>
+                            </Link>
+                        </div>
+                        <p className="text-xs text-slate-500">
+                            &copy; {currentYear} Sibi Siddharth S. All Rights Reserved.
+                        </p>
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-center gap-6">
                         <div className="flex items-center gap-3">
-                            {loading ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-8 w-20" />) :
-                                Object.entries(stats).map(([key, value]) => (
+                            {loadingStats ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-8 w-20" />) :
+                                Object.entries(stats).filter(([key, value]) => value !== -1).map(([key, value]) => (
                                     <div key={key} className="flex items-center gap-1.5 bg-slate-200/80 text-slate-700 px-2.5 py-1 rounded-md text-xs">
                                         {key === 'stars' && <FiStar/>} {key === 'commits' && <VscGitCommit/>} {key === 'prs' && <FiGitPullRequest/>} {key === 'repos' && <VscSourceControl/>}
                                         <span className="font-bold">{value.toLocaleString()}</span>
@@ -238,9 +203,6 @@ export default function Footer() {
                             </div>
                             <div className='flex items-center justify-center'>
                                 <Link to="/terms" className="text-sm text-slate-500 hover:text-blue-600 hover:underline">Terms & Conditions</Link>
-                                {/* <button onClick={handleScrollToTop} className="cursor-pointer text-slate-500 hover:text-blue-600 absolute right-10" title="Back to top">
-                                    <FiArrowUp size={20}/>
-                                </button> */}
                             </div>
                         </div>
                     </div>

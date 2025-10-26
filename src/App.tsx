@@ -7,7 +7,6 @@ import Toaster from './components/ui/Toaster';
 import MaintenanceWrapper from './components/maintenance/MaintenanceWrapper';
 import { getSettingsData } from './services/settingsService';
 import { socket } from './sockets/socket';
-import NyraChatbot from './components/NyraChatbot';
 
 function App() {
   const queryClient = useQueryClient();
@@ -59,7 +58,6 @@ function App() {
           loading={loading}
         >
           <RouterProvider router={router} />
-          {/* <NyraChatbot /> */}
         </MaintenanceWrapper>
         <Toaster />
       </PublicAuthProvider>
