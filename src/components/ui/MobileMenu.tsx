@@ -1,6 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiMail } from 'react-icons/fi';
 import SocialLinks from './SocialLinks';
+import MyMind from '../../../public/android-chrome-512x512.png.png';
+import { Link } from 'react-router-dom';
+// info icon import 
+import { FiInfo } from 'react-icons/fi';
 
 // Local Type Definition
 interface LinksData { github?: string; linkedin?: string; instagram?: string; portal?: string; }
@@ -18,7 +22,6 @@ export default function MobileMenu({ isOpen, onClose, scrollToSection, links }: 
     { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' },
     { id: 'journey', label: 'Journey' },
-    // { id: 'contact', label: 'Contact' },
   ];
 
   const menuVariants = {
@@ -54,7 +57,20 @@ export default function MobileMenu({ isOpen, onClose, scrollToSection, links }: 
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center p-6 border-b border-slate-200 flex-shrink-0">
-              <h2 className="font-bold text-lg text-slate-800">Menu</h2>
+              <div className="flex items-center gap-1.5">
+                <img src={MyMind} alt="MyMind Logo" className="h-9 w-9" />
+                <div>
+                  <h2 className="font-bold text-lg text-slate-800">MyMind</h2>
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-sm text-slate-500 flex">
+                      powered by Nyra.ai
+                    </p>
+                    <Link to="/nyra">
+                      <FiInfo className="text-slate-700 hover:text-slate-900 h-3.5 w-3.5" title="Learn more about Nyra.ai"/>
+                    </Link>
+                  </div>
+                </div>
+              </div>
               <button onClick={onClose} className="p-1 text-slate-500 hover:text-slate-900">
                 <FiX size={24} />
               </button>

@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { generateAIDescription_Public } from '../services/aiService';
 import toast from 'react-hot-toast';
 import Nyra from '../assets/NyraAI.png';
+import { FiShare2 } from 'react-icons/fi';
 
 interface Member { id: string; name: string; profileImage?: string | null; githubLink?: string; linkedinLink?: string; }
 interface ProjectMember { id: string; role: string; member: Member; }
@@ -21,6 +22,18 @@ interface AiSummaryProps {
     projectId: string;
     existingAiDescription: string;
 }
+
+const onShare = () => {
+    const shareData = {
+        title: document.title,
+        text: 'Check out this project on MyMind!',
+        url: window.location.href
+    };
+
+    navigator.share(shareData).catch((error) => {
+        console.error('Error sharing:', error);
+    });
+};
 
 const SummarySkeleton = () => (
     <div className="space-y-3">
@@ -148,9 +161,14 @@ export default function ProjectDetailPage() {
             <main className="sm:px-4 lg:px-6 py-6">
                 <div className="container mx-auto px-6">
                     <motion.div initial={{opacity: 0, y: 20}} animate={{opacity: 1, y: 0}} transition={{duration: 0.5}}>
-                        <div className="text-center">
+                        <div className="flex flex-col items-center text-center">
                             <span className="text-sm font-bold text-blue-600 uppercase tracking-widest">{project.category.name}</span>
-                            <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mt-2">{project.name}</h1>
+                            <div className="w-fit relative">
+                                <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mt-2">{project.name}</h1>
+                                <button onClick={onShare} className="cursor-pointer absolute top-1 -right-4 text-slate-500 hover:text-slate-900" title="Share Project">
+                                    <FiShare2 />
+                                </button>
+                            </div>
                             <p className="text-slate-500 mt-3 flex items-center justify-center gap-2">
                                 <FiCalendar/>
                                 <span>{formatDate(project.startDate)} - {project.endDate ? formatDate(project.endDate) : 'Present'}</span>

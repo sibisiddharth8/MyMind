@@ -1,6 +1,7 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import Footer from './Footer';
+import NyraChatbot from '../components/NyraChatbot';
 
 export default function SubPageLayout() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function SubPageLayout() {
         {/* The child page (e.g., ProjectsPage) will be rendered here */}
         <Outlet />
       </main>
+      <NyraChatbot />
       <Footer />
     </div>
   );
