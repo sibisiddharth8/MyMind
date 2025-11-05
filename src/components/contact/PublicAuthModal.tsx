@@ -119,7 +119,7 @@ export default function PublicAuthModal({ isOpen, onClose }: PublicAuthModalProp
                                 {mode === 'reset' && (
                                     <motion.div key="reset" variants={formVariants} initial="hidden" animate="visible" exit="exit">
                                         <h3 className="text-2xl font-bold text-center text-slate-800">Set New Password</h3>
-                                        <p className="text-slate-500 mt-2 text-center text-sm">A code was sent to <strong className="text-slate-700">{emailForReset || authData.email}</strong>.</p>
+                                        <p className="text-slate-500 mt-2 text-center text-sm">A code was sent to <strong className="text-slate-700">{authData.email}</strong>.</p>
                                         <form className="mt-8 space-y-6" onSubmit={HReset(onReset)}>
                                             <AuthInput id="otp" label="6-Digit Reset Code" type="text" icon={<FiKey/>} register={RReset('otp', { required: true, minLength: 6, maxLength: 6 })}/>
                                             <AuthInput id="new-password" label="New Password" type="password" icon={<FiLock/>} register={RReset('password', { required: true })}/>
