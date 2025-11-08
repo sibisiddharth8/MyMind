@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiMail } from 'react-icons/fi';
 import SocialLinks from './SocialLinks';
-import MyMind from '../../../public/android-chrome-512x512.png.png';
+import MyMind from '../../../public/android-chrome-512x512.png';
 import { Link } from 'react-router-dom';
 // info icon import 
 import { FiInfo } from 'react-icons/fi';
