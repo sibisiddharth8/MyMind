@@ -21,13 +21,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # ✅ Create .env.production with both Clarity & Google Analytics IDs
       - name: Create .env.production
         run: |
           echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env.production
           echo "VITE_CLARITY_PROJECT_ID=${{ secrets.VITE_CLARITY_PROJECT_ID }}" >> .env.production
+          echo "VITE_GA_MEASUREMENT_ID=${{ secrets.VITE_GA_MEASUREMENT_ID }}" >> .env.production
 
       - name: Build the project
         run: npm run build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
+          VITE_GA_MEASUREMENT_ID: ${{ secrets.VITE_GA_MEASUREMENT_ID }}
 
       - name: Set Git Identity
         run: |
