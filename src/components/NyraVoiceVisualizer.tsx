@@ -45,9 +45,9 @@ export default function NyraVoiceVisualizer({ state, onClick }: NyraVoiceVisuali
         ) : (
           <div className="flex flex-col items-center gap-1">
             {state === 'listening' ? <FiSquare size={22} /> : <FiMic size={22} />}
-            <div className="w-16 h-2 bg-white/20 rounded-full overflow-hidden">
+            {/* <div className="w-16 h-2 bg-white/20 rounded-full overflow-hidden">
               <div className="h-full bg-white/60 animate-pulse" style={{ width: state === 'listening' ? '70%' : '20%' }} />
-            </div>
+            </div> */}
           </div>
         )}
       </motion.button>

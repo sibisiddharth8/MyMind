@@ -330,7 +330,7 @@ const NyraChatbot = () => {
                                 {browserSupportsRecording && (
                                     <button 
                                         onClick={toggleVoiceMode} 
-                                        className={`p-2 rounded-full ${isVoiceMode ? 'bg-blue-100 text-blue-600' : 'text-slate-500 hover:bg-slate-200'} transition-colors`} 
+                                        className={`cursor-pointer p-2 rounded-full ${isVoiceMode ? 'bg-blue-100 text-blue-600' : 'text-slate-500 hover:bg-slate-200'} transition-colors`} 
                                         aria-label="Toggle Voice Mode"
                                     >
                                         {isVoiceMode ? <FiMicOff size={18} /> : <FiMic size={18} />}
@@ -338,19 +338,19 @@ const NyraChatbot = () => {
                                 )}
                                 <button 
                                     onClick={toggleMute} 
-                                    className={`p-2 rounded-full ${isMuted ? 'bg-red-100 text-red-600' : 'text-slate-500 hover:bg-slate-200'} transition-colors`} 
+                                    className={`cursor-pointer p-2 rounded-full ${isMuted ? 'bg-red-100 text-red-600' : 'text-slate-500 hover:bg-slate-200'} transition-colors`} 
                                     aria-label="Toggle Mute"
                                 >
                                     {isMuted ? <FiVolumeX size={18} /> : <FiVolume2 size={18} />}
                                 </button>
                                 <button 
                                     onClick={() => setIsFullScreen(prev => !prev)} 
-                                    className="p-2 rounded-full text-slate-500 hover:bg-slate-200 transition-colors hidden sm:block" 
+                                    className={`cursor-pointer p-2 rounded-full text-slate-500 hover:bg-slate-200 transition-colors hidden sm:block`} 
                                     aria-label={isFullScreen ? "Exit Full Screen" : "Enter Full Screen"}
                                 >
                                     {isFullScreen ? <FiMinimize size={18} /> : <FiMaximize size={18} />}
                                 </button>
-                                <button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-slate-800" aria-label="Close Chat">
+                                <button onClick={() => setIsOpen(false)} className={`cursor-pointer text-slate-500 hover:text-slate-800`} aria-label="Close Chat">
                                     <FiX size={24} />
                                 </button>
                             </div>
