@@ -3,11 +3,12 @@ import MainLayout from '../layouts/MainLayout';
 import SubPageLayout from '../layouts/SubPageLayout';
 import HomePage from '../pages/HomePage';
 import ProjectsPage from '../pages/ProjectsPage';
+import CertificatesPage from '../pages/CertificatesPage';
+import CertificateDetailPage from '../pages/CertificateDetailPage';
 import ProjectDetailPage from '../pages/ProjectDetailPage';
 import TermsPage from '../pages/TermsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import Nyra from '../pages/Nyra';
-
 
 export const router = createHashRouter([
   {
@@ -30,6 +31,14 @@ export const router = createHashRouter([
         {
             path: 'projects/:id',
             element: <ProjectDetailPage />,
+        },
+        {
+            path: 'certificates',
+            element: <CertificatesPage />,
+        },
+        {
+            path: 'certificates/:id',
+            element: <CertificateDetailPage />,
         },
         {
             path: 'terms',

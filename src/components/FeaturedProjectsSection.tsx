@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { getRecentProjects } from '../services/projectService';
 import ProjectCard from './projects/ProjectCard';
-import ProjectDetailModal from './projects/ProjectDetailModal';
 import { FiAlertTriangle } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import SectionHeader from './ui/SectionHeader';
@@ -57,7 +56,6 @@ export default function FeaturedProjectsSection() {
             </Link>
         </div>
       </div>
-      <ProjectDetailModal isOpen={!!selectedProject} onClose={() => setSelectedProject(null)} project={selectedProject} />
     </motion.section>
   );
 }

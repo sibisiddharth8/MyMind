@@ -19,9 +19,10 @@ interface MobileMenuProps {
 export default function MobileMenu({ isOpen, onClose, scrollToSection, links }: MobileMenuProps) {
   const navLinks = [
     { id: 'about', label: 'About' },
-    { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' },
+    { id: 'projects', label: 'Projects' },
     { id: 'journey', label: 'Journey' },
+    { id: 'certificates', label: 'Certifications' },
   ];
 
   const menuVariants = {

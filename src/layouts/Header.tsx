@@ -29,6 +29,7 @@ export default function Header() {
     { id: 'skills', label: 'Skills' },
     { id: 'projects', label: 'Projects' },
     { id: 'journey', label: 'Journey' },
+    { id: 'certificates', label: 'Certifications' },
     { id: 'contact', label: 'Contact' },
   ];
 
