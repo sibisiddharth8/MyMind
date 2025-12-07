@@ -121,7 +121,7 @@ export default function ProjectsPage() {
                     </div>
                 </div>
 
-                {isLoading && <div className="h-96 flex justify-center items-center"><Loader /></div>}
+                {isLoading && <Loader />}
                 {isError && <div className="text-center py-16 text-red-500">Failed to load projects.</div>}
 
                 {!isLoading && !isError && (

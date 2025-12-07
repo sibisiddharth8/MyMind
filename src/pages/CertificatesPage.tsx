@@ -90,7 +90,7 @@ export default function AllCertificatesPage() {
                             >
                                 <option value="">All</option>
                                 {categories.map((cat: Category) => (
-                                    <option key={cat.id} value={cat.id}>
+                                    <option key={cat.id} value={cat.id} className=''>
                                         {cat.name}
                                     </option>
                                 ))}

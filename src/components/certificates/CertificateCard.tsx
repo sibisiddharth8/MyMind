@@ -63,7 +63,7 @@ export default function CertificateCard({ certificate }: { certificate: Certific
                 </div>
                 <div>
                     <motion.div 
-                        className="absolute top-3 right-3 bg-white/70 backdrop-blur-md rounded-full p-2 border border-white/60 shadow-sm transition-opacity duration-300"
+                        className="absolute top-3 right-3 bg-white/70 backdrop-blur-md rounded-full p-2 border border-white/60 shadow-sm transition-opacity duration-300 z-10 group-hover:opacity-100 opacity-80"
                     >
                         <FiArrowUpRight className="text-slate-600" />
                     </motion.div>
