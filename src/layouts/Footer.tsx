@@ -201,8 +201,11 @@ export default function Footer() {
                             <div>
                                 <SocialLinks links={links} />
                             </div>
-                            <div className='flex items-center justify-center'>
+                            <div className='flex items-center justify-center gap-3'>
+                                <span className="text-slate-300">•</span>
                                 <Link to="/terms" className="text-sm text-slate-500 hover:text-blue-600 hover:underline">Terms & Conditions</Link>
+                                <span className="text-slate-300">•</span>
+                                <Link to="/privacy-policy" className="text-sm text-slate-500 hover:text-blue-600 hover:underline">Privacy Policy</Link>
                             </div>
                         </div>
                     </div>

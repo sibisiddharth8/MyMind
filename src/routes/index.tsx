@@ -12,6 +12,7 @@ import Nyra from '../pages/Nyra';
 
 import PublicBlogListPage from '../pages/PublicBlogListPage';
 import PublicBlogDetailsPage from '../pages/PublicBlogDetailsPage';
+import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
 
 export const router = createHashRouter([
   {
@@ -58,6 +59,10 @@ export const router = createHashRouter([
         {
             path: 'nyra',
             element: <Nyra />,
+        },
+        {
+            path: 'privacy-policy',
+            element: <PrivacyPolicyPage />,
         },
         {
           path: '*',
