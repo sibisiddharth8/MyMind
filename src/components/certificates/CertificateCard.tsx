@@ -6,7 +6,6 @@ interface Certificate {
     id: string;
     name: string;
     certificateFile: string;
-    // category: { name: string };
     issuer?: string;
 }
 
