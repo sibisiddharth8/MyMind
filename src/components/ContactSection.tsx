@@ -6,6 +6,7 @@ import ActionButton from './ui/ActionButton';
 import PublicAuthModal from './contact/PublicAuthModal';
 import ContactForm from './contact/ContactForm';
 import { FiMessageSquare } from 'react-icons/fi';
+import UserAvatar from './ui/UserAvatar';
 
 export default function ContactSection() {
     const { isAuthenticated, user, logout } = usePublicAuth();
@@ -41,7 +42,7 @@ export default function ContactSection() {
                                     <ContactForm />
                                     <button 
                                         onClick={logout} 
-                                        className="text-xs text-slate-500 hover:text-blue-600 hover:underline mt-6"
+                                        className="cursor-pointer text-xs text-slate-500 hover:text-blue-600 hover:underline mt-6"
                                     >
                                         Sign out
                                     </button>

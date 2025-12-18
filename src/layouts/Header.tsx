@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiBox, FiMenu, FiX } from 'react-icons/fi';
 import MobileMenu from '../components/ui/MobileMenu';
@@ -23,15 +23,17 @@ export default function Header() {
 
   const { links } = usePortfolioData();
   const observer = useRef<IntersectionObserver | null>(null);
+  const navigate = useNavigate();
 
   const navLinks = [
+    { id: 'blogs', label: 'Blogs', to: '/blogs' as const },
     { id: 'about', label: 'About' },
     { id: 'skills', label: 'Skills' },
     { id: 'projects', label: 'Projects' },
     { id: 'journey', label: 'Journey' },
     { id: 'certificates', label: 'Certifications' },
-    { id: 'contact', label: 'Contact' },
-  ];
+    { id: 'contact', label: 'Contact' }
+  ] as Array<{ id: string; label: string; to?: '/blogs' }>;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -40,7 +42,9 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const elements = navLinks.map(link => document.getElementById(link.id)).filter(Boolean) as HTMLElement[];
+    const elements = navLinks
+      .map(link => document.getElementById(link.id))
+      .filter(Boolean) as HTMLElement[];
     if (observer.current) observer.current.disconnect();
 
     observer.current = new IntersectionObserver((entries) => {
@@ -106,7 +110,7 @@ export default function Header() {
             {navLinks.map(link => (
               <button
                 key={link.id}
-                onClick={() => scrollToSection(link.id)}
+                onClick={() => link.to ? navigate(link.to) : scrollToSection(link.id)}
                 onMouseEnter={() => setHoveredLink(link.id)}
                 className="relative px-4 py-2 text-sm font-medium rounded-full cursor-pointer"
               >

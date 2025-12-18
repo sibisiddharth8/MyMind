@@ -15,10 +15,12 @@
   "dependencies": {
     "@headlessui/react": "^2.2.4",
     "@microsoft/clarity": "^1.0.0",
+    "@react-oauth/google": "^0.12.2",
     "@tailwindcss/vite": "^4.1.10",
     "@tanstack/react-query": "^5.81.2",
     "axios": "^1.10.0",
     "framer-motion": "^12.18.1",
+    "html-react-parser": "^5.2.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.58.1",

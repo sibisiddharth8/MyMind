@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { usePublicAuth } from '../../context/PublicAuthContext';
 import { sendMessage } from '../../services/contactService';
 import Button from '../ui/Button';
+import UserAvatar from '../ui/UserAvatar';
 
 interface ContactFormData { subject: string; message: string; }
 
@@ -26,14 +27,18 @@ export default function ContactForm() {
             toast.success("Your message has been sent successfully!");
             reset();
         },
-        onError: () => toast.error("Failed to send message. Please try again."),
+        onError: (error: any) => {
+            // Extract proper error message from backend response
+            const errorMessage = error.response?.data?.message || error.response?.data?.errors?.[0]?.message || "Failed to send message. Please try again.";
+            toast.error(errorMessage);
+        },
     });
 
     const onSubmit: SubmitHandler<ContactFormData> = data => mutation.mutate(data);
 
     return (
         <div className="text-center">
-            <p className="text-slate-600">Welcome, <span className="font-semibold text-slate-800">{user?.name}</span>!</p>
+            <p className="text-slate-600 flex items-center justify-center gap-2"><UserAvatar src={user?.profileImage} alt={user?.name} />Welcome <span className="font-semibold text-slate-800">{user?.name}</span>!</p>
             <p className="text-slate-500 text-sm mt-1">Please fill out the form below to get in touch.</p>
             <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4 max-w-lg mx-auto">
                 <Controller name="subject" control={control} rules={{required: true}} render={({field}) => <input {...field} placeholder="Subject" className="w-full p-3 border border-slate-300 rounded-lg bg-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500" />} />

@@ -20,3 +20,7 @@ export const resetPublicUserPassword = async (data: any) => {
     const response = await apiClient.post(`/users/reset-password/${data.token}`, { password: data.password });
     return response.data;
 };
+export const continueWithGoogle = async (token: string) => {
+    const response = await apiClient.post('/users/auth/google', { token });
+    return response.data;
+};

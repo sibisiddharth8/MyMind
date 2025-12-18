@@ -7,6 +7,7 @@ interface PublicUser {
   id: string;
   name: string;
   email: string;
+  profileImage?: string;
 }
 
 // FIX: The context type now correctly includes the 'user' and 'token'

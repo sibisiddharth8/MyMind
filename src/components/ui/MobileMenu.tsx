@@ -18,6 +18,7 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ isOpen, onClose, scrollToSection, links }: MobileMenuProps) {
   const navLinks = [
+    { id: 'blogs', label: 'Blogs', to: '/blogs' },
     { id: 'about', label: 'About' },
     { id: 'skills', label: 'Skills' },
     { id: 'projects', label: 'Projects' },
@@ -79,18 +80,31 @@ export default function MobileMenu({ isOpen, onClose, scrollToSection, links }: 
             
             <nav className="flex-grow p-6 flex flex-col gap-6 text-xl overflow-y-auto">
               {navLinks.map((link, i) => (
-                <motion.button 
+                <motion.div
                   key={link.id}
                   custom={i}
                   variants={linkVariants}
                   initial="hidden"
                   animate="visible"
                   transition={{ delay: 0.1 + i * 0.05 }}
-                  onClick={() => { scrollToSection(link.id); onClose(); }} 
-                  className="text-left font-semibold text-slate-800 hover:text-blue-600 transition-colors"
                 >
-                  {link.label}
-                </motion.button>
+                  {link.to ? (
+                    <Link 
+                      to={link.to}
+                      onClick={onClose}
+                      className="block font-semibold text-slate-800 hover:text-blue-600 transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={() => { scrollToSection(link.id); onClose(); }}
+                      className="text-left font-semibold text-slate-800 hover:text-blue-600 transition-colors"
+                    >
+                      {link.label}
+                    </button>
+                  )}
+                </motion.div>
               ))}
             </nav>
 

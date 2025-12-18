@@ -10,6 +10,9 @@ import TermsPage from '../pages/TermsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import Nyra from '../pages/Nyra';
 
+import PublicBlogListPage from '../pages/PublicBlogListPage';
+import PublicBlogDetailsPage from '../pages/PublicBlogDetailsPage';
+
 export const router = createHashRouter([
   {
     path: '/',
@@ -43,6 +46,14 @@ export const router = createHashRouter([
         {
             path: 'terms',
             element: <TermsPage />,
+        },
+        {
+            path: 'blogs',
+            element: <PublicBlogListPage />,
+        },
+        {
+            path: 'blogs/:slug', 
+            element: <PublicBlogDetailsPage />,
         },
         {
             path: 'nyra',
