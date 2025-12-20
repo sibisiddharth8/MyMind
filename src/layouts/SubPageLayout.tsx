@@ -31,7 +31,6 @@ export default function SubPageLayout() {
   const handleLogout = () => {
     logout();
     setShowDropdown(false);
-    navigate('/');
   };
 
   return (
@@ -73,7 +72,13 @@ export default function SubPageLayout() {
                   >
                     {/* User Info */}
                     <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-blue-50 to-indigo-50 flex items-center gap-3">
-                      <div className='w-7 h-7 rounded-full'><img className='rounded-full' src={user.profileImage ? `${user.profileImage}?t=${Date.now()}` : user.profileImage} alt={user.name} /></div>
+                      <div className='w-7 h-7 rounded-full'>
+                        {user.profileImage? <img className='rounded-full' src={user.profileImage} alt={user.name} /> : <UserAvatar
+                          src={user.profileImage ? `${user.profileImage}?t=${Date.now()}` : user.profileImage}
+                          alt={user.name}
+                          size="sm"
+                        />}
+                      </div>
                       <div>
                       <p className="font-semibold text-slate-900 truncate">{user.name}</p>
                       <p className="text-xs text-slate-600 truncate">{user.email}</p>
