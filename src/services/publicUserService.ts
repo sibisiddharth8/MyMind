@@ -24,3 +24,25 @@ export const continueWithGoogle = async (token: string) => {
     const response = await apiClient.post('/users/auth/google', { token });
     return response.data;
 };
+
+export const getUserActivity = async (type?: string, page: number = 1, limit: number = 10) => {
+    const params = new URLSearchParams();
+    if (type) params.append('type', type);
+    params.append('page', page.toString());
+    params.append('limit', limit.toString());
+    
+    const { data } = await apiClient.get(`/activity?${params.toString()}`);
+    return data;
+};
+
+export const updatePublicProfile = async (formData: FormData) => {
+    const { data } = await apiClient.put('/profile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return data;
+};
+
+export const changePublicPassword = async (data: any) => {
+    const { data: response } = await apiClient.put('/change-password', data);
+    return response;
+};

@@ -1,10 +1,17 @@
 import { motion } from 'framer-motion';
 import PageHeader from '../components/ui/PageHeader';
+import { use, useEffect } from 'react';
 
 export default function PrivacyPolicyPage() {
+
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
+
   return (
     <div className="bg-slate-50 min-h-screen">
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-8">
         <motion.div 
           initial={{ opacity: 0, y: -20 }} 
           animate={{ opacity: 1, y: 0 }}

@@ -16,8 +16,10 @@ interface PublicAuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  googleId: string | null;
   login: (token: string, user: PublicUser, rememberMe: boolean) => void;
   logout: () => void;
+  refreshUser: (user: PublicUser) => void;
 }
 
 const PublicAuthContext = createContext<PublicAuthContextType | undefined>(undefined);
@@ -80,8 +82,17 @@ export const PublicAuthProvider = ({ children }: { children: ReactNode }) => {
     delete apiClient.defaults.headers.common['Authorization'];
   }, []);
 
+  // Function to update user data in context and storage
+  const refreshUser = useCallback((updatedUser: PublicUser) => {
+    setUser(updatedUser);
+    
+    // Update in storage (check both localStorage and sessionStorage)
+    const storage = localStorage.getItem('public_user') ? localStorage : sessionStorage;
+    storage.setItem('public_user', JSON.stringify(updatedUser));
+  }, []);
+
   // FIX: The 'value' object now correctly provides the token to all child components
-  const value = { user, token, isAuthenticated: !!token, isLoading, login, logout };
+  const value = { user, token, isAuthenticated: !!token, isLoading, login, logout, refreshUser };
 
   return <PublicAuthContext.Provider value={value}>{children}</PublicAuthContext.Provider>;
 };

@@ -14,6 +14,8 @@ import PublicBlogListPage from '../pages/PublicBlogListPage';
 import PublicBlogDetailsPage from '../pages/PublicBlogDetailsPage';
 import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
 
+import { protectedRoutes } from './protectedRoutes';
+
 export const router = createHashRouter([
   {
     path: '/',
@@ -64,6 +66,8 @@ export const router = createHashRouter([
             path: 'privacy-policy',
             element: <PrivacyPolicyPage />,
         },
+
+        ...protectedRoutes,
         {
           path: '*',
           element: <NotFoundPage />,
