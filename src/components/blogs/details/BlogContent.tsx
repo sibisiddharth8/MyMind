@@ -1,4 +1,3 @@
-import parse from 'html-react-parser';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
@@ -12,17 +11,15 @@ export default function BlogContent({ content }: { content: string }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className={`prose prose-lg prose-slate max-w-none mx-auto
+                className={`blog-content-display prose prose-lg prose-slate max-w-none mx-auto
                     prose-headings:font-bold prose-headings:text-slate-800 
                     prose-p:text-slate-600 prose-p:leading-relaxed
                     prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
                     prose-img:rounded-2xl prose-img:shadow-md
-                    prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-slate-50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-lg
                     ${!isExpanded ? 'line-clamp-5' : ''}
                     transition-all duration-300`}
-            >
-                {parse(content)}
-            </motion.div>
+                dangerouslySetInnerHTML={{ __html: content }}
+            />
             
             {/* Glassmorphic Fade Overlay (only when collapsed) */}
             {!isExpanded && (
@@ -48,6 +45,41 @@ export default function BlogContent({ content }: { content: string }) {
                     )}
                 </button>
             </div>
+
+            <style>{`
+                .blog-content-display ul {
+                    list-style-type: disc !important;
+                    margin-left: 1.5rem !important;
+                    padding-left: 1rem !important;
+                }
+                .blog-content-display ol {
+                    list-style-type: decimal !important;
+                    margin-left: 1.5rem !important;
+                    padding-left: 1rem !important;
+                }
+                .blog-content-display li {
+                    margin-bottom: 0.5rem !important;
+                }
+                .blog-content-display p {
+                    white-space: pre-line !important;
+                }
+                .blog-content-display p:empty {
+                    min-height: 1rem !important;
+                }
+                .blog-content-display blockquote {
+                    border-left: 4px solid #3b82f6 !important;
+                    background-color: #f8fafc !important;
+                    padding: 0.5rem 1rem !important;
+                    border-radius: 0 0.5rem 0.5rem 0 !important;
+                }
+                .blog-content-display a {
+                    color: #2563eb !important;
+                    text-decoration: underline !important;
+                }
+                .blog-content-display a:hover {
+                    color: #1d4ed8 !important;
+                }
+            `}</style>
         </div>
     );
 }
